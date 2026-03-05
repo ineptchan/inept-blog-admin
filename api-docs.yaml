@@ -1,0 +1,2222 @@
+openapi: 3.1.0
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+  - url: http://127.0.0.1:8080
+    description: Generated server url
+paths:
+  /role/{id}:
+    get:
+      tags:
+        - 角色接口
+      summary: 根据id获取角色
+      operationId: getRoleById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/RoleVO"
+      security:
+        - accessToken: []
+    put:
+      tags:
+        - 角色接口
+      summary: 更新角色
+      operationId: updateRole
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateRoleDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/RoleVO"
+      security:
+        - accessToken: []
+    delete:
+      tags:
+        - 角色接口
+      summary: 删除角色
+      operationId: deleteRole
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+      security:
+        - accessToken: []
+  /permission/{id}:
+    get:
+      tags:
+        - 权限接口
+      summary: 根据id获取权限
+      operationId: getPermissionById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PermissionVO"
+      security:
+        - accessToken: []
+    put:
+      tags:
+        - 权限接口
+      summary: 更新权限
+      operationId: updatePermission
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePermissionDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PermissionVO"
+      security:
+        - accessToken: []
+  /admin/articles/{id}/video:
+    put:
+      tags:
+        - 文章接口
+      summary: 上传文章视频
+      operationId: uploadVideo
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: dto
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/UploadArticleVideoDTO"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+      security:
+        - accessToken: []
+  /admin/articles/{id}/image:
+    put:
+      tags:
+        - 文章接口
+      summary: 上传文章图片
+      operationId: uploadImage
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: dto
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/UploadArticleImageDTO"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+      security:
+        - accessToken: []
+  /admin/articles/{id}/featured-image:
+    put:
+      tags:
+        - 文章接口
+      summary: 上传文章封面图片
+      operationId: uploadFeaturedImage
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: dto
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/UploadArticleFeaturedImageDTO"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+      security:
+        - accessToken: []
+  /admin/articles/{id}/attachment:
+    put:
+      tags:
+        - 文章接口
+      summary: 上传文章附件
+      operationId: uploadAttachment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: dto
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/UploadArticleAttachmentDTO"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+      security:
+        - accessToken: []
+  /admin/articles/status:
+    put:
+      tags:
+        - 文章接口
+      summary: 批量更新文章状态
+      operationId: updateArticleStatus
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateArticleStatusDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: boolean
+      security:
+        - accessToken: []
+  /user/comment:
+    post:
+      tags:
+        - 评论接口
+      summary: 创建评论
+      operationId: createComment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCommentDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommentVO"
+      security:
+        - accessToken: []
+  /role:
+    get:
+      tags:
+        - 角色接口
+      summary: 获取角色列表
+      operationId: getRoles
+      parameters:
+        - name: dto
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/QueryRoleDTO"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponseRoleVO"
+      security:
+        - accessToken: []
+    post:
+      tags:
+        - 角色接口
+      summary: 创建角色
+      operationId: createRole
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateRoleDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/RoleVO"
+      security:
+        - accessToken: []
+  /auth/refresh:
+    post:
+      tags:
+        - 身份接口
+      summary: 刷新令牌
+      operationId: refresh
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/RefreshVO"
+      security:
+        - refreshToken: []
+  /auth/logout:
+    post:
+      tags:
+        - 身份接口
+      summary: 退出登录
+      operationId: logout
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+      security:
+        - refreshToken: []
+  /auth/login:
+    post:
+      tags:
+        - 身份接口
+      summary: 登录
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthLoginDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AuthLoginVO"
+  /admin/user:
+    get:
+      tags:
+        - 用户接口
+      summary: 获取用户列表
+      operationId: getUsers
+      parameters:
+        - name: dto
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/QueryUserDTO"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponseUserVO"
+      security:
+        - accessToken: []
+    post:
+      tags:
+        - 用户接口
+      summary: 创建用户
+      operationId: createUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUserDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserVO"
+      security:
+        - accessToken: []
+  /admin/tag:
+    get:
+      tags:
+        - 标签接口
+      summary: 获取标签列表
+      operationId: getTags
+      parameters:
+        - name: dto
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/QueryTagDTO"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponseTagVO"
+      security:
+        - accessToken: []
+    post:
+      tags:
+        - 标签接口
+      summary: 创建标签
+      operationId: createTag
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTagDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TagVO"
+      security:
+        - accessToken: []
+  /admin/comment:
+    get:
+      tags:
+        - 评论接口
+      summary: 获取评论列表
+      operationId: getComments
+      parameters:
+        - name: dto
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/QueryCommentDTO"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponseCommentVO"
+      security:
+        - accessToken: []
+    post:
+      tags:
+        - 评论接口
+      summary: 创建评论
+      operationId: createComment_1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCommentDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommentVO"
+      security:
+        - accessToken: []
+  /admin/categories:
+    get:
+      tags:
+        - 分类接口
+      summary: 获取分类列表
+      operationId: getCategories
+      parameters:
+        - name: dto
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/QueryCategoriesDTO"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponseCategoriesVO"
+      security:
+        - accessToken: []
+    post:
+      tags:
+        - 分类接口
+      summary: 创建分类
+      operationId: createCategory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCategoriesDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CategoriesVO"
+      security:
+        - accessToken: []
+  /admin/articles:
+    get:
+      tags:
+        - 文章接口
+      summary: 获取文章列表
+      operationId: getArticles
+      parameters:
+        - name: dto
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/QueryArticleDTO"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponseHomeArticleVO"
+      security:
+        - accessToken: []
+    post:
+      tags:
+        - 文章接口
+      summary: 创建文章
+      operationId: createArticle
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateArticleDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ArticleVO"
+      security:
+        - accessToken: []
+  /user/user:
+    get:
+      tags:
+        - 用户接口
+      summary: 获得用户资料
+      operationId: getProfile
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserInfoVO"
+      security:
+        - accessToken: []
+    patch:
+      tags:
+        - 用户接口
+      summary: 更新用户资料
+      operationId: updateProfile
+      parameters:
+        - name: dto
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/UpdateUserProfileDTO"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserVO"
+      security:
+        - accessToken: []
+  /admin/user/{id}:
+    get:
+      tags:
+        - 用户接口
+      summary: 根据id获取用户
+      operationId: getUserById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserInfoVO"
+      security:
+        - accessToken: []
+    delete:
+      tags:
+        - 用户接口
+      summary: 删除用户
+      operationId: deleteUserById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: boolean
+      security:
+        - accessToken: []
+    patch:
+      tags:
+        - 用户接口
+      summary: 更新用户
+      operationId: updateUser
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateUserDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserVO"
+      security:
+        - accessToken: []
+  /admin/tag/{id}:
+    get:
+      tags:
+        - 标签接口
+      summary: 根据id获取标签
+      operationId: getTagById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TagVO"
+      security:
+        - accessToken: []
+    delete:
+      tags:
+        - 标签接口
+      summary: 删除标签
+      operationId: deleteTag
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: boolean
+      security:
+        - accessToken: []
+    patch:
+      tags:
+        - 标签接口
+      summary: 更新标签
+      operationId: updateTag
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateTagDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TagVO"
+      security:
+        - accessToken: []
+  /admin/comment/{id}:
+    get:
+      tags:
+        - 评论接口
+      summary: 根据id获取评论
+      operationId: getCommentById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommentVO"
+      security:
+        - accessToken: []
+    delete:
+      tags:
+        - 评论接口
+      summary: 删除评论
+      operationId: deleteComment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: boolean
+      security:
+        - accessToken: []
+    patch:
+      tags:
+        - 评论接口
+      summary: 更新评论
+      operationId: updateComment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCommentDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CommentSummaryVO"
+      security:
+        - accessToken: []
+  /admin/categories/{id}:
+    get:
+      tags:
+        - 分类接口
+      summary: 根据id获取分类
+      operationId: getCategoriesById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CategoriesVO"
+      security:
+        - accessToken: []
+    delete:
+      tags:
+        - 分类接口
+      summary: 删除分类
+      operationId: deleteCategory
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: boolean
+      security:
+        - accessToken: []
+    patch:
+      tags:
+        - 分类接口
+      summary: 更新分类
+      operationId: updateCategory
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCategoriesDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CategoriesVO"
+      security:
+        - accessToken: []
+  /admin/articles/{id}:
+    get:
+      tags:
+        - 文章接口
+      summary: 根据id获取文章
+      operationId: getArticleById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ArticleVO"
+      security:
+        - accessToken: []
+    delete:
+      tags:
+        - 文章接口
+      summary: 删除文章
+      operationId: deleteArticle
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: boolean
+      security:
+        - accessToken: []
+    patch:
+      tags:
+        - 文章接口
+      summary: 更新文章
+      operationId: updateArticle
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateArticleDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ArticleVO"
+      security:
+        - accessToken: []
+  /role/{id}/permissions:
+    get:
+      tags:
+        - 角色接口
+      summary: 获取角色绑定的权限
+      operationId: getRoleBindPermissions
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PermissionVO"
+      security:
+        - accessToken: []
+  /public/tag:
+    get:
+      tags:
+        - 标签接口
+      summary: 获取标签列表
+      operationId: getTags_1
+      parameters:
+        - name: dto
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/QueryTagDTO"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponseTagVO"
+  /public/comment/{commentId}/replies:
+    get:
+      tags:
+        - 评论接口
+      summary: 获得评论回复列表
+      operationId: getCommentReplies
+      parameters:
+        - name: commentId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: dto
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/BaseQueryDTO"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponseCommentReplyVO"
+  /public/comment/{articleId}:
+    get:
+      tags:
+        - 评论接口
+      summary: 获取顶级评论列表
+      operationId: getTopComments
+      parameters:
+        - name: articleId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: dto
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/BaseQueryDTO"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponseTopCommentVO"
+  /public/categories:
+    get:
+      tags:
+        - 分类接口
+      summary: 获取分类列表
+      operationId: getCategories_1
+      parameters:
+        - name: dto
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/QueryCategoriesDTO"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponseCategoriesVO"
+  /public/articles:
+    get:
+      tags:
+        - 文章接口
+      summary: 获取主页文章列表
+      operationId: getHomeArticles
+      parameters:
+        - name: dto
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/QueryArticleDTO"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponseHomeArticleVO"
+  /permission:
+    get:
+      tags:
+        - 权限接口
+      summary: 获取权限列表
+      operationId: getPermissions
+      parameters:
+        - name: dto
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/QueryPermissionDTO"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponsePermissionVO"
+      security:
+        - accessToken: []
+  /admin/comment/{commentId}/replies:
+    get:
+      tags:
+        - 评论接口
+      summary: 获得评论回复列表
+      operationId: getCommentReplies_1
+      parameters:
+        - name: commentId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: dto
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/BaseQueryDTO"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponseCommentReplyVO"
+      security:
+        - accessToken: []
+components:
+  schemas:
+    UpdateRoleDTO:
+      type: object
+      properties:
+        code:
+          type: string
+          description: 角色标识符
+        name:
+          type: string
+          description: 角色名字
+        description:
+          type: string
+          description: 角色描述
+    RoleVO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: 角色id
+        code:
+          type: string
+          description: 角色标识符
+        name:
+          type: string
+          description: 角色名字
+        description:
+          type: string
+          description: 角色描述
+      required:
+        - code
+        - id
+        - name
+    UpdatePermissionDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 权限名字
+        description:
+          type: string
+          description: 权限描述
+    PermissionVO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: 权限id
+        code:
+          type: string
+          description: 权限标识符
+        name:
+          type: string
+          description: 权限名字
+        description:
+          type: string
+          description: 权限描述
+      required:
+        - code
+        - id
+        - name
+    UploadArticleVideoDTO:
+      type: object
+      properties:
+        video:
+          type: string
+          format: binary
+          description: 文章视频
+      required:
+        - video
+    UploadArticleImageDTO:
+      type: object
+      properties:
+        image:
+          type: string
+          format: binary
+          description: 文章图片
+      required:
+        - image
+    UploadArticleFeaturedImageDTO:
+      type: object
+      properties:
+        featuredImage:
+          type: string
+          format: binary
+          description: 文章封面图片
+      required:
+        - featuredImage
+    UploadArticleAttachmentDTO:
+      type: object
+      properties:
+        attachment:
+          type: string
+          format: binary
+          description: 文章附件
+      required:
+        - attachment
+    UpdateArticleStatusDTO:
+      type: object
+      properties:
+        articleIds:
+          type: array
+          description: 文章id
+          items:
+            type: integer
+            format: int64
+        articleStatus:
+          type: string
+          description: 文章状态
+          enum:
+            - DRAFT
+            - PUBLISHED
+            - ARCHIVED
+      required:
+        - articleIds
+        - articleStatus
+    CreateCommentDTO:
+      type: object
+      properties:
+        content:
+          type: string
+          description: 评论内容
+        articleId:
+          type: integer
+          format: int64
+          description: 评论的文章id
+        parentCommentId:
+          type: integer
+          format: int64
+          description: 父级评论
+      required:
+        - articleId
+        - content
+    ArticleTitleVO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: 文章id
+        title:
+          type: string
+          description: 文章标题
+      required:
+        - id
+        - title
+    CommentSummaryVO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: 评论id
+        content:
+          type: string
+          description: 评论内容
+        user:
+          $ref: "#/components/schemas/UserLiteVO"
+          description: 评论的用户
+      required:
+        - content
+        - id
+        - user
+    CommentVO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: 评论id
+        content:
+          type: string
+          description: 评论内容
+        article:
+          $ref: "#/components/schemas/ArticleTitleVO"
+          description: 评论的文章id
+        user:
+          $ref: "#/components/schemas/UserLiteVO"
+          description: 评论的用户
+        parentComment:
+          $ref: "#/components/schemas/CommentSummaryVO"
+          description: 父级评论
+        createdAt:
+          type: string
+          format: date-time
+          description: 评论创建时间
+      required:
+        - article
+        - content
+        - createdAt
+        - id
+        - user
+    UserLiteVO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: 用户id
+        nickname:
+          type: string
+          description: 昵称
+      required:
+        - id
+        - nickname
+    CreateRoleDTO:
+      type: object
+      properties:
+        code:
+          type: string
+          description: 角色标识符
+        name:
+          type: string
+          description: 角色名字
+        description:
+          type: string
+          description: 角色描述
+      required:
+        - code
+        - name
+    RefreshVO:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          description: openai.auth.access_token
+      required:
+        - accessToken
+    AuthLoginDTO:
+      type: object
+      properties:
+        username:
+          type: string
+          description: 用户名
+        password:
+          type: string
+          description: 密码
+      required:
+        - password
+        - username
+    AuthLoginVO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: 用户id
+        username:
+          type: string
+          description: 用户名
+        nickname:
+          type: string
+          description: 昵称
+        email:
+          type: string
+          description: 邮箱
+        accessToken:
+          type: string
+          description: openai.auth.access_token
+      required:
+        - accessToken
+        - id
+        - nickname
+        - username
+    CreateUserDTO:
+      type: object
+      properties:
+        nickname:
+          type: string
+          description: 昵称
+        username:
+          type: string
+          description: 用户名
+        password:
+          type: string
+          description: 密码
+        email:
+          type: string
+          description: 邮箱
+        role:
+          type: array
+          description: 角色id
+          items:
+            type: integer
+            format: int64
+      required:
+        - nickname
+        - password
+        - username
+    UserVO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: 用户id
+        nickname:
+          type: string
+          description: 昵称
+        username:
+          type: string
+          description: 用户名
+        email:
+          type: string
+          description: 邮箱
+      required:
+        - id
+        - nickname
+        - username
+    CreateTagDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 标签名字
+        slug:
+          type: string
+          description: 标签URL标识
+      required:
+        - name
+        - slug
+    TagVO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: 标签id
+        name:
+          type: string
+          description: 标签名字
+        slug:
+          type: string
+          description: 标签URL标识
+      required:
+        - id
+        - name
+        - slug
+    CreateCategoriesDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 分类名字
+        slug:
+          type: string
+          description: 分类URL标识
+      required:
+        - name
+        - slug
+    CategoriesVO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: 分类id
+        name:
+          type: string
+          description: 分类名字
+        slug:
+          type: string
+          description: 分类URL标识
+      required:
+        - id
+        - name
+        - slug
+    CreateArticleDTO:
+      type: object
+      properties:
+        title:
+          type: string
+          description: 文章标题
+        slug:
+          type: string
+          description: 文章URL标识
+        content:
+          type: string
+          description: 文章内容
+        categoryId:
+          type: integer
+          format: int64
+          description: 文章分类
+        tagIds:
+          type: array
+          description: 文章标签
+          items:
+            type: integer
+            format: int64
+      required:
+        - categoryId
+        - content
+        - slug
+        - tagIds
+        - title
+    ArticleVO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: 文章id
+        title:
+          type: string
+          description: 文章标题
+        slug:
+          type: string
+          description: 文章URL标识
+        featuredImage:
+          type: string
+          description: 文章封面图片
+        content:
+          type: string
+          description: 文章内容
+        author:
+          $ref: "#/components/schemas/UserLiteVO"
+          description: 文章作者
+        category:
+          $ref: "#/components/schemas/CategoriesVO"
+          description: 文章分类
+        tags:
+          type: array
+          description: 文章标签
+          items:
+            $ref: "#/components/schemas/TagVO"
+        articleStatus:
+          type: string
+          description: 文章状态
+          enum:
+            - DRAFT
+            - PUBLISHED
+            - ARCHIVED
+        createdAt:
+          type: string
+          format: date-time
+          description: 创建时间
+        updatedAt:
+          type: string
+          format: date-time
+          description: 更新时间
+      required:
+        - articleStatus
+        - author
+        - category
+        - content
+        - createdAt
+        - id
+        - slug
+        - tags
+        - title
+    UpdateUserProfileDTO:
+      type: object
+      properties:
+        nickname:
+          type: string
+          description: 昵称
+        password:
+          type: string
+          description: 密码
+        avatar:
+          type: string
+          format: binary
+          description: 头像
+    UpdateUserDTO:
+      type: object
+      properties:
+        nickname:
+          type: string
+          description: 昵称
+        username:
+          type: string
+          description: 用户名
+        password:
+          type: string
+          description: 密码
+        email:
+          type: string
+          description: 邮箱
+        role:
+          type: array
+          description: 角色
+          items:
+            type: integer
+            format: int64
+    UpdateTagDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 标签名字
+        slug:
+          type: string
+          description: 标签URL标识
+    UpdateCommentDTO:
+      type: object
+      properties:
+        content:
+          type: string
+          description: 评论内容
+    UpdateCategoriesDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 分类名字
+        slug:
+          type: string
+          description: 分类URL标识
+    UpdateArticleDTO:
+      type: object
+      properties:
+        title:
+          type: string
+          description: 文章标题
+        slug:
+          type: string
+          description: 文章URL标识
+        content:
+          type: string
+          description: 文章内容
+        categoryId:
+          type: integer
+          format: int64
+          description: 文章分类
+        tagIds:
+          type: array
+          description: 文章标签
+          items:
+            type: integer
+            format: int64
+        articleStatus:
+          type: string
+          description: 文章状态
+          enum:
+            - DRAFT
+            - PUBLISHED
+            - ARCHIVED
+    UserInfoVO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: 用户id
+        nickname:
+          type: string
+          description: 昵称
+        avatar:
+          type: string
+          description: 头像
+        username:
+          type: string
+          description: 用户名
+        email:
+          type: string
+          description: 邮箱
+        permissionCodes:
+          type: array
+          description: openapi.permission.permission
+          items:
+            type: string
+      required:
+        - avatar
+        - id
+        - nickname
+        - permissionCodes
+        - username
+    QueryRoleDTO:
+      type: object
+      properties:
+        keyword:
+          type: string
+          description: "角色关键词(角色标识符 ,角色名字,角色描述)"
+        page:
+          type: integer
+          format: int32
+          description: 页数
+        size:
+          type: integer
+          format: int32
+          description: 大小
+      required:
+        - page
+        - size
+    PageResponseRoleVO:
+      type: object
+      properties:
+        content:
+          type: array
+          description: 当前页数据列表
+          items:
+            $ref: "#/components/schemas/RoleVO"
+        page:
+          type: integer
+          format: int32
+          description: 当前页号
+        size:
+          type: integer
+          format: int32
+          description: 每页大小
+        totalElements:
+          type: integer
+          format: int64
+          description: 总条数
+        totalPages:
+          type: integer
+          format: int32
+          description: 总页数
+      required:
+        - content
+        - page
+        - size
+        - totalElements
+        - totalPages
+    QueryTagDTO:
+      type: object
+      properties:
+        keyword:
+          type: string
+          description: "标签关键词(标签名字,标签URL标识)"
+        page:
+          type: integer
+          format: int32
+          description: 页数
+        size:
+          type: integer
+          format: int32
+          description: 大小
+      required:
+        - page
+        - size
+    PageResponseTagVO:
+      type: object
+      properties:
+        content:
+          type: array
+          description: 当前页数据列表
+          items:
+            $ref: "#/components/schemas/TagVO"
+        page:
+          type: integer
+          format: int32
+          description: 当前页号
+        size:
+          type: integer
+          format: int32
+          description: 每页大小
+        totalElements:
+          type: integer
+          format: int64
+          description: 总条数
+        totalPages:
+          type: integer
+          format: int32
+          description: 总页数
+      required:
+        - content
+        - page
+        - size
+        - totalElements
+        - totalPages
+    BaseQueryDTO:
+      type: object
+      properties:
+        page:
+          type: integer
+          format: int32
+          description: 页数
+        size:
+          type: integer
+          format: int32
+          description: 大小
+      required:
+        - page
+        - size
+    CommentReplyVO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: 评论id
+        content:
+          type: string
+          description: 评论内容
+        user:
+          $ref: "#/components/schemas/UserLiteVO"
+          description: 评论的用户
+        createdAt:
+          type: string
+          format: date-time
+          description: 评论创建时间
+      required:
+        - content
+        - createdAt
+        - id
+        - user
+    PageResponseCommentReplyVO:
+      type: object
+      properties:
+        content:
+          type: array
+          description: 当前页数据列表
+          items:
+            $ref: "#/components/schemas/CommentReplyVO"
+        page:
+          type: integer
+          format: int32
+          description: 当前页号
+        size:
+          type: integer
+          format: int32
+          description: 每页大小
+        totalElements:
+          type: integer
+          format: int64
+          description: 总条数
+        totalPages:
+          type: integer
+          format: int32
+          description: 总页数
+      required:
+        - content
+        - page
+        - size
+        - totalElements
+        - totalPages
+    PageResponseTopCommentVO:
+      type: object
+      properties:
+        content:
+          type: array
+          description: 当前页数据列表
+          items:
+            $ref: "#/components/schemas/TopCommentVO"
+        page:
+          type: integer
+          format: int32
+          description: 当前页号
+        size:
+          type: integer
+          format: int32
+          description: 每页大小
+        totalElements:
+          type: integer
+          format: int64
+          description: 总条数
+        totalPages:
+          type: integer
+          format: int32
+          description: 总页数
+      required:
+        - content
+        - page
+        - size
+        - totalElements
+        - totalPages
+    TopCommentVO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: 评论id
+        content:
+          type: string
+          description: 评论内容
+        user:
+          $ref: "#/components/schemas/UserLiteVO"
+          description: 评论的用户
+        createdAt:
+          type: string
+          format: date-time
+          description: 评论创建时间
+      required:
+        - content
+        - createdAt
+        - id
+        - user
+    QueryCategoriesDTO:
+      type: object
+      properties:
+        keyword:
+          type: string
+          description: "分类关键词(分类名字,分类URL标识)"
+        page:
+          type: integer
+          format: int32
+          description: 页数
+        size:
+          type: integer
+          format: int32
+          description: 大小
+      required:
+        - page
+        - size
+    PageResponseCategoriesVO:
+      type: object
+      properties:
+        content:
+          type: array
+          description: 当前页数据列表
+          items:
+            $ref: "#/components/schemas/CategoriesVO"
+        page:
+          type: integer
+          format: int32
+          description: 当前页号
+        size:
+          type: integer
+          format: int32
+          description: 每页大小
+        totalElements:
+          type: integer
+          format: int64
+          description: 总条数
+        totalPages:
+          type: integer
+          format: int32
+          description: 总页数
+      required:
+        - content
+        - page
+        - size
+        - totalElements
+        - totalPages
+    QueryArticleDTO:
+      type: object
+      properties:
+        category:
+          type: integer
+          format: int64
+          description: 文章分类
+        keyword:
+          type: string
+          description: "文章关键词(文章标题,文章URL标识,文章内容)"
+        tagIds:
+          type: array
+          description: 文章标签
+          items:
+            type: integer
+            format: int64
+        articleStatus:
+          type: string
+          description: 文章状态
+          enum:
+            - DRAFT
+            - PUBLISHED
+            - ARCHIVED
+        page:
+          type: integer
+          format: int32
+          description: 页数
+        size:
+          type: integer
+          format: int32
+          description: 大小
+      required:
+        - page
+        - size
+    HomeArticleVO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: 文章id
+        title:
+          type: string
+          description: 文章标题
+        slug:
+          type: string
+          description: 文章URL标识
+        featuredImage:
+          type: string
+          description: 文章封面图片
+        homeContent:
+          type: string
+          description: 主页文章内容
+        author:
+          $ref: "#/components/schemas/UserLiteVO"
+          description: 文章作者
+        category:
+          $ref: "#/components/schemas/CategoriesVO"
+          description: 文章分类
+        tags:
+          type: array
+          description: 文章标签
+          items:
+            $ref: "#/components/schemas/TagVO"
+        articleStatus:
+          type: string
+          description: 文章状态
+          enum:
+            - DRAFT
+            - PUBLISHED
+            - ARCHIVED
+      required:
+        - articleStatus
+        - author
+        - category
+        - homeContent
+        - id
+        - slug
+        - tags
+        - title
+    PageResponseHomeArticleVO:
+      type: object
+      properties:
+        content:
+          type: array
+          description: 当前页数据列表
+          items:
+            $ref: "#/components/schemas/HomeArticleVO"
+        page:
+          type: integer
+          format: int32
+          description: 当前页号
+        size:
+          type: integer
+          format: int32
+          description: 每页大小
+        totalElements:
+          type: integer
+          format: int64
+          description: 总条数
+        totalPages:
+          type: integer
+          format: int32
+          description: 总页数
+      required:
+        - content
+        - page
+        - size
+        - totalElements
+        - totalPages
+    QueryPermissionDTO:
+      type: object
+      properties:
+        keyword:
+          type: string
+          description: "权限关键词(权限标识符,权限名字,权限描述)"
+        page:
+          type: integer
+          format: int32
+          description: 页数
+        size:
+          type: integer
+          format: int32
+          description: 大小
+      required:
+        - page
+        - size
+    PageResponsePermissionVO:
+      type: object
+      properties:
+        content:
+          type: array
+          description: 当前页数据列表
+          items:
+            $ref: "#/components/schemas/PermissionVO"
+        page:
+          type: integer
+          format: int32
+          description: 当前页号
+        size:
+          type: integer
+          format: int32
+          description: 每页大小
+        totalElements:
+          type: integer
+          format: int64
+          description: 总条数
+        totalPages:
+          type: integer
+          format: int32
+          description: 总页数
+      required:
+        - content
+        - page
+        - size
+        - totalElements
+        - totalPages
+    QueryUserDTO:
+      type: object
+      properties:
+        keyword:
+          type: string
+          description: "用户关键词(昵称,用户名,邮箱)"
+        page:
+          type: integer
+          format: int32
+          description: 页数
+        size:
+          type: integer
+          format: int32
+          description: 大小
+      required:
+        - page
+        - size
+    PageResponseUserVO:
+      type: object
+      properties:
+        content:
+          type: array
+          description: 当前页数据列表
+          items:
+            $ref: "#/components/schemas/UserVO"
+        page:
+          type: integer
+          format: int32
+          description: 当前页号
+        size:
+          type: integer
+          format: int32
+          description: 每页大小
+        totalElements:
+          type: integer
+          format: int64
+          description: 总条数
+        totalPages:
+          type: integer
+          format: int32
+          description: 总页数
+      required:
+        - content
+        - page
+        - size
+        - totalElements
+        - totalPages
+    QueryCommentDTO:
+      type: object
+      properties:
+        keyword:
+          type: string
+          description: 评论关键词(评论内容)
+        page:
+          type: integer
+          format: int32
+          description: 页数
+        size:
+          type: integer
+          format: int32
+          description: 大小
+      required:
+        - page
+        - size
+    PageResponseCommentVO:
+      type: object
+      properties:
+        content:
+          type: array
+          description: 当前页数据列表
+          items:
+            $ref: "#/components/schemas/CommentVO"
+        page:
+          type: integer
+          format: int32
+          description: 当前页号
+        size:
+          type: integer
+          format: int32
+          description: 每页大小
+        totalElements:
+          type: integer
+          format: int64
+          description: 总条数
+        totalPages:
+          type: integer
+          format: int32
+          description: 总页数
+      required:
+        - content
+        - page
+        - size
+        - totalElements
+        - totalPages
+  securitySchemes:
+    accessToken:
+      type: http
+      description: 访问令牌（JWT）
+      scheme: bearer
+      bearerFormat: JWT
+    refreshToken:
+      type: apiKey
+      description: 刷新令牌（仅用于刷新接口）
+      name: X-Refresh-Token
+      in: cookie
