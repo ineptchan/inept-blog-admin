@@ -14,7 +14,7 @@ const userStore = useUserStore()
 // 认证头：每次请求都读取最新 token（避免状态不同步）
 const authMiddleware: Middleware = {
     async onRequest({request}) {
-        const token = userStore.accessToken;
+        let token = userStore.accessToken;
         if (token) request.headers.set("Authorization", `Bearer ${token}`);
         return request;
     },
@@ -31,9 +31,7 @@ const unauthorizedMiddleware: Middleware = {
                 title: string,
             } = await response.clone().json();
 
-            console.log(data)
-
-            //令牌缺少
+            //令牌缺少，尝试刷新令牌
             if (data.errorCode === "message.auth.token_missing") {
                 const res = await authApi.refresh()
                 if (res.ok) {

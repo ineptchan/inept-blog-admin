@@ -121,7 +121,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/user/comment": {
+    "/user/comment/{id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -243,22 +243,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/admin/comment": {
+    "/admin/comment/{id}": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** 获取评论列表 */
-        get: operations["getComments"];
+        /** 根据id获取评论 */
+        get: operations["getCommentById"];
         put?: never;
         /** 创建评论 */
         post: operations["createComment_1"];
-        delete?: never;
+        /** 删除评论 */
+        delete: operations["deleteComment"];
         options?: never;
         head?: never;
-        patch?: never;
+        /** 更新评论 */
+        patch: operations["updateComment"];
         trace?: never;
     };
     "/admin/categories": {
@@ -351,25 +353,6 @@ export interface paths {
         head?: never;
         /** 更新标签 */
         patch: operations["updateTag"];
-        trace?: never;
-    };
-    "/admin/comment/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** 根据id获取评论 */
-        get: operations["getCommentById"];
-        put?: never;
-        post?: never;
-        /** 删除评论 */
-        delete: operations["deleteComment"];
-        options?: never;
-        head?: never;
-        /** 更新评论 */
-        patch: operations["updateComment"];
         trace?: never;
     };
     "/admin/categories/{id}": {
@@ -529,6 +512,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/comment": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 获取评论列表 */
+        get: operations["getComments"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/comment/{commentId}/replies": {
         parameters: {
             query?: never;
@@ -632,11 +632,6 @@ export interface components {
             content: string;
             /**
              * Format: int64
-             * @description 评论的文章id
-             */
-            articleId: number;
-            /**
-             * Format: int64
              * @description 父级评论
              */
             parentCommentId?: number;
@@ -720,7 +715,7 @@ export interface components {
             nickname: string;
             /** @description 邮箱 */
             email?: string;
-            /** @description openai.auth.access_token */
+            /** @description 访问令牌 */
             accessToken: string;
         };
         CreateUserDTO: {
@@ -747,6 +742,8 @@ export interface components {
             username: string;
             /** @description 邮箱 */
             email?: string;
+            /** @description 状态 */
+            status: boolean;
         };
         CreateTagDTO: {
             /** @description 标签名字 */
@@ -855,6 +852,8 @@ export interface components {
             email?: string;
             /** @description 角色 */
             role?: number[];
+            /** @description 状态 */
+            status?: boolean;
         };
         UpdateTagDTO: {
             /** @description 标签名字 */
@@ -906,6 +905,8 @@ export interface components {
             username: string;
             /** @description 邮箱 */
             email?: string;
+            /** @description 状态 */
+            status: boolean;
             /** @description openapi.permission.permission */
             permissionCodes: string[];
         };
@@ -1229,20 +1230,6 @@ export interface components {
              */
             totalPages: number;
         };
-        QueryUserDTO: {
-            /** @description 用户关键词(昵称,用户名,邮箱) */
-            keyword?: string;
-            /**
-             * Format: int32
-             * @description 页数
-             */
-            page: number;
-            /**
-             * Format: int32
-             * @description 大小
-             */
-            size: number;
-        };
         PageResponseUserVO: {
             /** @description 当前页数据列表 */
             content: components["schemas"]["UserVO"][];
@@ -1554,7 +1541,10 @@ export interface operations {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                /** @description 评论的文章id */
+                id: number;
+            };
             cookie?: never;
         };
         requestBody: {
@@ -1686,8 +1676,13 @@ export interface operations {
     };
     getUsers: {
         parameters: {
-            query: {
-                dto: components["schemas"]["QueryUserDTO"];
+            query?: {
+                /** @description 用户关键词(昵称,用户名,邮箱) */
+                keyword?: string;
+                /** @description 页数 */
+                page?: number;
+                /** @description 大小 */
+                size?: number;
             };
             header?: never;
             path?: never;
@@ -1776,13 +1771,13 @@ export interface operations {
             };
         };
     };
-    getComments: {
+    getCommentById: {
         parameters: {
-            query: {
-                dto: components["schemas"]["QueryCommentDTO"];
-            };
+            query?: never;
             header?: never;
-            path?: never;
+            path: {
+                id: number;
+            };
             cookie?: never;
         };
         requestBody?: never;
@@ -1793,7 +1788,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["PageResponseCommentVO"];
+                    "*/*": components["schemas"]["CommentVO"];
                 };
             };
         };
@@ -1802,7 +1797,10 @@ export interface operations {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                /** @description 评论的文章id */
+                id: number;
+            };
             cookie?: never;
         };
         requestBody: {
@@ -1818,6 +1816,54 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["CommentVO"];
+                };
+            };
+        };
+    };
+    deleteComment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": boolean;
+                };
+            };
+        };
+    };
+    updateComment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateCommentDTO"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CommentSummaryVO"];
                 };
             };
         };
@@ -2092,76 +2138,6 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["TagVO"];
-                };
-            };
-        };
-    };
-    getCommentById: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["CommentVO"];
-                };
-            };
-        };
-    };
-    deleteComment: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": boolean;
-                };
-            };
-        };
-    };
-    updateComment: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateCommentDTO"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["CommentSummaryVO"];
                 };
             };
         };
@@ -2460,6 +2436,28 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["PageResponsePermissionVO"];
+                };
+            };
+        };
+    };
+    getComments: {
+        parameters: {
+            query: {
+                dto: components["schemas"]["QueryCommentDTO"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PageResponseCommentVO"];
                 };
             };
         };

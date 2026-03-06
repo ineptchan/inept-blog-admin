@@ -12,5 +12,16 @@ export const userApi = {
                 }
             }
         )
-    )
+    ),
+
+    updateUserStatus: (id: number, status: boolean) => request(() => client.PATCH('/admin/user/{id}', {
+        params: {
+            path: {
+                id: id
+            }
+        },
+        body: {
+            status: status
+        }
+    }))
 }
