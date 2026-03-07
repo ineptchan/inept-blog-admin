@@ -4,51 +4,40 @@ import {Plus} from "@element-plus/icons-vue"
 import {userApi} from "@/api/modules/user.ts"
 import PageCard from "@/components/PageCard.vue"
 
-interface UserItem {
-  id: number
-  nickname: string
-  username: string
-  email?: string
-  status: boolean
-  // role: string
-}
-
 const isUserListLoading = ref(false)
 
-const userListQuery = ref({
-  keyword: "",
-  total: 100,
-  currentPage: 1,
+const userListQuery = ref<PageQueryRequest>({
+  keyword: '',
+  page: 1,
   pageSize: 20
 })
 
-const userList = ref<UserItem[]>([])
+const userListQueryResult = ref<PageQueryResponse<UserType>>({
+  content: [],
+  page: 1,
+  size: 0,
+  totalElements: 0,
+  totalPages: 0
+})
 
 const handlePageChange = (page: number) => {
-  userListQuery.value.currentPage = page
+  userListQuery.value.page = page
   fetchUserList()
 }
 
 const fetchUserList = async () => {
   if (isUserListLoading.value) return
-
   isUserListLoading.value = true
 
-  const res = await userApi.getUsers(
-      userListQuery.value.keyword,
-      userListQuery.value.currentPage,
-      userListQuery.value.pageSize
-  )
-
+  const res = await userApi.getUsers(userListQuery.value)
   if (res.ok) {
-    userList.value = res.data.content
-    userListQuery.value.total = res.data.totalElements
+    userListQueryResult.value = res.data
   }
 
   isUserListLoading.value = false
 }
 
-const handleBeforeStatusChange = async (user: UserItem) => {
+const handleBeforeStatusChange = async (user: UserType) => {
   await userApi.updateUserStatus(user.id, !user.status)
   fetchUserList()
 }
@@ -71,7 +60,7 @@ onMounted(() => {
       </div>
       <el-button type="primary" :icon="Plus">新增用户</el-button>
     </div>
-    <el-table :data="userList" border stripe class="w-full" v-loading="isUserListLoading">
+    <el-table v-loading="isUserListLoading" :data="userListQueryResult.content" border class="w-full" stripe>
       <el-table-column prop="id" label="id" width="60" align="center"/>
       <el-table-column prop="nickname" label="用户昵称" width="150"/>
       <el-table-column prop="username" label="用户名" width="150"/>
@@ -92,7 +81,7 @@ onMounted(() => {
       <el-pagination
           background
           layout="total, prev, pager, next"
-          :total="userListQuery.total"
+          :total="userListQueryResult.totalElements"
           :page-size="userListQuery.pageSize"
           @current-change="handlePageChange"
       />

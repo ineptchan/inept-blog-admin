@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import PageCard from "@/components/PageCard.vue"
 import {onMounted, ref} from "vue"
+import PageCard from "@/components/PageCard.vue"
 import {permissionApi} from "@/api/modules/permission.ts"
 
 interface PermissionItem {
@@ -12,43 +12,47 @@ interface PermissionItem {
 
 const isPermissionListLoading = ref(false)
 
-const permissionListQuery = ref({
+const permissionListQuery = ref<PageQueryRequest>({
   keyword: "",
-  total: 100,
-  currentPage: 1,
+  page: 1,
   pageSize: 20
 })
 
-const permissionList = ref<PermissionItem[]>([])
+const permissionListQueryResult = ref<PageQueryResponse<PermissionItem>>({
+  content: [],
+  page: 1,
+  size: 0,
+  totalElements: 0,
+  totalPages: 0
+})
+
+const handlePageChange = (page: number) => {
+  permissionListQuery.value.page = page
+  fetchPermissionList()
+}
+
+const handleSearch = () => {
+  permissionListQuery.value.page = 1
+  fetchPermissionList()
+}
 
 const fetchPermissionList = async () => {
   if (isPermissionListLoading.value) return
-
   isPermissionListLoading.value = true
 
-  const res = await permissionApi.getPermissions(
-      permissionListQuery.value.keyword,
-      permissionListQuery.value.currentPage,
-      permissionListQuery.value.pageSize
-  )
-
+  const res = await permissionApi.getPermissions(permissionListQuery.value)
   if (res.ok) {
-    permissionList.value = res.data.content
-    permissionListQuery.value.total = res.data.totalElements
+    permissionListQueryResult.value = res.data
   }
 
   isPermissionListLoading.value = false
-}
-
-const handlePageChange = (page: number) => {
-  permissionListQuery.value.currentPage = page
-  fetchPermissionList()
 }
 
 onMounted(() => {
   fetchPermissionList()
 })
 </script>
+
 <template>
   <PageCard>
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
@@ -59,20 +63,21 @@ onMounted(() => {
             class="w-64"
             clearable
         />
-        <el-button type="primary" plain @click="fetchPermissionList">搜索</el-button>
+        <el-button plain type="primary" @click="handleSearch">搜索</el-button>
       </div>
     </div>
+
     <el-table
-        :data="permissionList"
+        :data="permissionListQueryResult.content"
         border
         stripe
         class="w-full"
         v-loading="isPermissionListLoading"
     >
-      <el-table-column prop="id" label="id" width="60" align="center"/>
-      <el-table-column prop="code" label="标识符" width="350"/>
-      <el-table-column prop="name" label="名字" width="250"/>
-      <el-table-column prop="description" label="描述" min-width="300"/>
+      <el-table-column align="center" label="id" prop="id" width="60" />
+      <el-table-column label="标识符" prop="code" width="350" />
+      <el-table-column label="名字" prop="name" width="250" />
+      <el-table-column label="描述" min-width="300" prop="description" />
       <el-table-column label="操作" width="180" fixed="right">
         <template #default="">
           <el-button size="small" type="primary" link>编辑</el-button>
@@ -80,11 +85,12 @@ onMounted(() => {
         </template>
       </el-table-column>
     </el-table>
+
     <div class="mt-6 flex justify-end">
       <el-pagination
           background
           layout="total, prev, pager, next"
-          :total="permissionListQuery.total"
+          :total="permissionListQueryResult.totalElements"
           :page-size="permissionListQuery.pageSize"
           @current-change="handlePageChange"
       />

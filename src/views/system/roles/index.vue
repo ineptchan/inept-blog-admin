@@ -1,10 +1,8 @@
 <script setup lang="ts">
+import {onMounted, ref} from "vue"
 import PageCard from "@/components/PageCard.vue"
-import { onMounted, ref } from "vue"
-import { roleApi } from "@/api/modules/role.ts"
-import BaseTablePagination from "@/components/BaseTablePagination.vue"
+import {roleApi} from "@/api/modules/role.ts"
 
-// TODO 提取到 type
 interface RolePermissionItem {
   id: number
   code: string
@@ -25,29 +23,32 @@ const isRolePermissionDialogVisible = ref(false)
 
 const rolePermissionList = ref<RolePermissionItem[]>([])
 
-const roleSearchKeyword = ref("")
-const pagination = ref({
-  total: 100,
-  currentPage: 1,
+const roleListQuery = ref<PageQueryRequest>({
+  keyword: "",
+  page: 1,
   pageSize: 20
 })
 
-const roleList = ref<RoleItem[]>([])
+const roleListQueryResult = ref<PageQueryResponse<RoleItem>>({
+  content: [],
+  page: 1,
+  size: 0,
+  totalElements: 0,
+  totalPages: 0
+})
+
+const handlePageChange = (page: number) => {
+  roleListQuery.value.page = page
+  fetchRoleList()
+}
 
 const fetchRoleList = async () => {
   if (isRoleListLoading.value) return
-
   isRoleListLoading.value = true
 
-  const res = await roleApi.getRoles(
-      roleSearchKeyword.value,
-      pagination.value.currentPage,
-      pagination.value.pageSize
-  )
-
+  const res = await roleApi.getRoles(roleListQuery.value)
   if (res.ok) {
-    roleList.value = res.data.content
-    pagination.value.total = res.data.totalElements
+    roleListQueryResult.value = res.data
   }
 
   isRoleListLoading.value = false
@@ -65,23 +66,17 @@ const fetchRolePermissions = async (roleId: number) => {
   isRolePermissionListLoading.value = false
 }
 
-const handlePageChange = (page: number) => {
-  pagination.value.currentPage = page
-  fetchRoleList()
-}
-
 onMounted(() => {
   fetchRoleList()
 })
 </script>
-
 <template>
   <div>
     <PageCard>
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <div class="flex gap-2 w-full sm:w-auto">
           <el-input
-              v-model="roleSearchKeyword"
+              v-model="roleListQuery.keyword"
               placeholder="搜索标识符/名字/描述..."
               class="w-64"
               clearable
@@ -89,43 +84,47 @@ onMounted(() => {
           <el-button type="primary" plain @click="fetchRoleList">搜索</el-button>
         </div>
       </div>
-
-      <BaseTablePagination
-          :table-data="roleList"
-          :loading="isRoleListLoading"
-          :page-data="pagination"
-          @page-change="handlePageChange"
-          @update:pageData="pagination = $event"
+      <el-table
+          v-loading="isRoleListLoading"
+          :data="roleListQueryResult.content"
+          border
+          class="w-full"
+          stripe
       >
-        <template #table>
-          <el-table-column prop="id" label="id" width="60" align="center" />
-          <el-table-column prop="code" label="标识符" width="350" />
-          <el-table-column prop="name" label="名字" width="250" />
-          <el-table-column prop="description" label="描述" min-width="300" />
-          <el-table-column label="操作" width="180" fixed="right">
-            <template #default="{ row }">
-              <el-button
-                  size="small"
-                  type="primary"
-                  link
-                  @click="fetchRolePermissions(row.id)"
-              >
-                权限
-              </el-button>
-              <el-button size="small" type="primary" link>编辑</el-button>
-              <el-button size="small" type="danger" link disabled>删除</el-button>
-            </template>
-          </el-table-column>
-        </template>
-      </BaseTablePagination>
+        <el-table-column align="center" label="id" prop="id" width="60"/>
+        <el-table-column label="标识符" prop="code" width="350"/>
+        <el-table-column label="名字" prop="name" width="250"/>
+        <el-table-column label="描述" min-width="300" prop="description"/>
+        <el-table-column fixed="right" label="操作" width="180">
+          <template #default="{ row }">
+            <el-button
+                link
+                size="small"
+                type="primary"
+                @click="fetchRolePermissions(row.id)"
+            >
+              权限
+            </el-button>
+            <el-button link size="small" type="primary">编辑</el-button>
+            <el-button disabled link size="small" type="danger">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div class="mt-6 flex justify-end">
+        <el-pagination
+            :page-size="roleListQuery.pageSize"
+            :total="roleListQueryResult.totalElements"
+            background
+            layout="total, prev, pager, next"
+            @current-change="handlePageChange"
+        />
+      </div>
     </PageCard>
-
     <el-dialog
         v-model="isRolePermissionDialogVisible"
         title="绑定的权限"
         width="960"
     >
-      <!-- TODO 提取 permissions 到统一的地方 -->
       <el-table
           :data="rolePermissionList"
           border
@@ -133,10 +132,10 @@ onMounted(() => {
           class="w-full"
           v-loading="isRolePermissionListLoading"
       >
-        <el-table-column prop="id" label="id" width="60" align="center" />
-        <el-table-column prop="code" label="标识符" width="350" />
-        <el-table-column prop="name" label="名字" width="250" />
-        <el-table-column prop="description" label="描述" min-width="300" />
+        <el-table-column align="center" label="id" prop="id" width="60"/>
+        <el-table-column label="标识符" prop="code" width="350"/>
+        <el-table-column label="名字" prop="name" width="250"/>
+        <el-table-column label="描述" min-width="300" prop="description"/>
       </el-table>
     </el-dialog>
   </div>
