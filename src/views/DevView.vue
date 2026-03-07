@@ -92,61 +92,63 @@ const getUsers = async () => {
 }
 </script>
 <template>
-  <el-card>
-    <template #header>Dark</template>
-    <template #default>
-      <el-switch v-model="isDark" inactive-text="深色模式"></el-switch>
-    </template>
-  </el-card>
-  <el-card>
-    <template #header>Auth</template>
-    <template #default>
-      <el-input v-model="form.account" placeholder="username"/>
-      <el-input v-model="form.password" autocomplete="password"/>
-      <el-button @click="login">登录</el-button>
-      <el-button @click="logout">退出登录</el-button>
-      <el-button @click="refresh">刷新令牌</el-button>
-    </template>
-    <template #footer>
-      <el-card>
-        <template #header><span class="text-4xl">Login</span></template>
-        <label class="block"> id=<code>{{ loginMsg.id }}</code></label>
-        <label class="block"> username=<code>{{ loginMsg.username }}</code></label>
-        <label class="block"> nickname=<code>{{ loginMsg.nickname }}</code></label>
-        <label class="block"> email=<code>{{ loginMsg.email }}</code></label>
-        <label class="block"> accessToken=<code>{{ loginMsg.accessToken }}</code></label>
-      </el-card>
-      <span class="block">logoutMsg:<code>{{ logoutMsg }}</code></span>
-      <span class="block">refresh:<code>{{ refreshMsg }}</code></span>
-      <code></code>
-    </template>
-  </el-card>
-  <el-card>
-    <template #header>User</template>
-    <template #default>
-      <el-table :data="users" border>
-        <el-table-column prop="id" label="id"/>
-        <el-table-column prop="nickname" label="nickname"/>
-        <el-table-column prop="username" label="username"/>
-        <el-table-column prop="email" label="email"/>
-      </el-table>
-      <el-pagination
-          layout="sizes, prev, pager, next"
-          :page-sizes="[20, 40, 60, 100]"
-          :size="page.size"
-          :total="50"
-      />
-    </template>
-    <template #footer>
-      <el-button @click="getUsers">获取用户</el-button>
-    </template>
-  </el-card>
-  <el-card>
-    <template #header>Pinia</template>
-    <template #default>
-      <div>{{ accessToken }}</div>
-    </template>
-  </el-card>
+  <div>
+    <el-card>
+      <template #header>Dark</template>
+      <template #default>
+        <el-switch v-model="isDark" inactive-text="深色模式"></el-switch>
+      </template>
+    </el-card>
+    <el-card>
+      <template #header>Auth</template>
+      <template #default>
+        <el-input v-model="form.account" placeholder="username"/>
+        <el-input v-model="form.password" autocomplete="password"/>
+        <el-button @click="login">登录</el-button>
+        <el-button @click="logout">退出登录</el-button>
+        <el-button @click="refresh">刷新令牌</el-button>
+      </template>
+      <template #footer>
+        <el-card>
+          <template #header><span class="text-4xl">Login</span></template>
+          <label class="block"> id=<code>{{ loginMsg.id }}</code></label>
+          <label class="block"> username=<code>{{ loginMsg.username }}</code></label>
+          <label class="block"> nickname=<code>{{ loginMsg.nickname }}</code></label>
+          <label class="block"> email=<code>{{ loginMsg.email }}</code></label>
+          <label class="block"> accessToken=<code>{{ loginMsg.accessToken }}</code></label>
+        </el-card>
+        <span class="block">logoutMsg:<code>{{ logoutMsg }}</code></span>
+        <span class="block">refresh:<code>{{ refreshMsg }}</code></span>
+        <code></code>
+      </template>
+    </el-card>
+    <el-card v-if="false">
+      <template #header>User</template>
+      <template #default>
+        <el-table :data="users" border>
+          <el-table-column prop="id" label="id"/>
+          <el-table-column prop="nickname" label="nickname"/>
+          <el-table-column prop="username" label="username"/>
+          <el-table-column prop="email" label="email"/>
+        </el-table>
+        <el-pagination
+            layout="sizes, prev, pager, next"
+            :page-sizes="[20, 40, 60, 100]"
+            :size="page.size"
+            :total="50"
+        />
+      </template>
+      <template #footer>
+        <el-button @click="getUsers">获取用户</el-button>
+      </template>
+    </el-card>
+    <el-card>
+      <template #header>Pinia</template>
+      <template #default>
+        <div>{{ accessToken }}</div>
+      </template>
+    </el-card>
+  </div>
 </template>
 <style scoped>
 </style>

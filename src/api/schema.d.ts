@@ -910,20 +910,6 @@ export interface components {
             /** @description openapi.permission.permission */
             permissionCodes: string[];
         };
-        QueryRoleDTO: {
-            /** @description 角色关键词(角色标识符 ,角色名字,角色描述) */
-            keyword?: string;
-            /**
-             * Format: int32
-             * @description 页数
-             */
-            page: number;
-            /**
-             * Format: int32
-             * @description 大小
-             */
-            size: number;
-        };
         PageResponseRoleVO: {
             /** @description 当前页数据列表 */
             content: components["schemas"]["RoleVO"][];
@@ -947,20 +933,6 @@ export interface components {
              * @description 总页数
              */
             totalPages: number;
-        };
-        QueryTagDTO: {
-            /** @description 标签关键词(标签名字,标签URL标识) */
-            keyword?: string;
-            /**
-             * Format: int32
-             * @description 页数
-             */
-            page: number;
-            /**
-             * Format: int32
-             * @description 大小
-             */
-            size: number;
         };
         PageResponseTagVO: {
             /** @description 当前页数据列表 */
@@ -1078,20 +1050,6 @@ export interface components {
              */
             createdAt: string;
         };
-        QueryCategoriesDTO: {
-            /** @description 分类关键词(分类名字,分类URL标识) */
-            keyword?: string;
-            /**
-             * Format: int32
-             * @description 页数
-             */
-            page: number;
-            /**
-             * Format: int32
-             * @description 大小
-             */
-            size: number;
-        };
         PageResponseCategoriesVO: {
             /** @description 当前页数据列表 */
             content: components["schemas"]["CategoriesVO"][];
@@ -1115,32 +1073,6 @@ export interface components {
              * @description 总页数
              */
             totalPages: number;
-        };
-        QueryArticleDTO: {
-            /**
-             * Format: int64
-             * @description 文章分类
-             */
-            category?: number;
-            /** @description 文章关键词(文章标题,文章URL标识,文章内容) */
-            keyword?: string;
-            /** @description 文章标签 */
-            tagIds?: number[];
-            /**
-             * @description 文章状态
-             * @enum {string}
-             */
-            articleStatus?: "DRAFT" | "PUBLISHED" | "ARCHIVED";
-            /**
-             * Format: int32
-             * @description 页数
-             */
-            page: number;
-            /**
-             * Format: int32
-             * @description 大小
-             */
-            size: number;
         };
         HomeArticleVO: {
             /**
@@ -1192,20 +1124,6 @@ export interface components {
              */
             totalPages: number;
         };
-        QueryPermissionDTO: {
-            /** @description 权限关键词(权限标识符,权限名字,权限描述) */
-            keyword?: string;
-            /**
-             * Format: int32
-             * @description 页数
-             */
-            page: number;
-            /**
-             * Format: int32
-             * @description 大小
-             */
-            size: number;
-        };
         PageResponsePermissionVO: {
             /** @description 当前页数据列表 */
             content: components["schemas"]["PermissionVO"][];
@@ -1254,20 +1172,6 @@ export interface components {
              */
             totalPages: number;
         };
-        QueryCommentDTO: {
-            /** @description 评论关键词(评论内容) */
-            keyword?: string;
-            /**
-             * Format: int32
-             * @description 页数
-             */
-            page: number;
-            /**
-             * Format: int32
-             * @description 大小
-             */
-            size: number;
-        };
         PageResponseCommentVO: {
             /** @description 当前页数据列表 */
             content: components["schemas"]["CommentVO"][];
@@ -1291,6 +1195,32 @@ export interface components {
              * @description 总页数
              */
             totalPages: number;
+        };
+        QueryArticleDTO: {
+            /**
+             * Format: int64
+             * @description 文章分类
+             */
+            category?: number;
+            /** @description 文章关键词(文章标题,文章URL标识,文章内容) */
+            keyword?: string;
+            /** @description 文章标签 */
+            tagIds?: number[];
+            /**
+             * @description 文章状态
+             * @enum {string}
+             */
+            articleStatus?: "DRAFT" | "PUBLISHED" | "ARCHIVED";
+            /**
+             * Format: int32
+             * @description 页数
+             */
+            page: number;
+            /**
+             * Format: int32
+             * @description 大小
+             */
+            size: number;
         };
     };
     responses: never;
@@ -1566,8 +1496,13 @@ export interface operations {
     };
     getRoles: {
         parameters: {
-            query: {
-                dto: components["schemas"]["QueryRoleDTO"];
+            query?: {
+                /** @description 角色关键词(角色标识符 ,角色名字,角色描述) */
+                keyword?: string;
+                /** @description 页数 */
+                page?: number;
+                /** @description 大小 */
+                size?: number;
             };
             header?: never;
             path?: never;
@@ -1727,8 +1662,13 @@ export interface operations {
     };
     getTags: {
         parameters: {
-            query: {
-                dto: components["schemas"]["QueryTagDTO"];
+            query?: {
+                /** @description 标签关键词(标签名字,标签URL标识) */
+                keyword?: string;
+                /** @description 页数 */
+                page?: number;
+                /** @description 大小 */
+                size?: number;
             };
             header?: never;
             path?: never;
@@ -1870,8 +1810,13 @@ export interface operations {
     };
     getCategories: {
         parameters: {
-            query: {
-                dto: components["schemas"]["QueryCategoriesDTO"];
+            query?: {
+                /** @description 分类关键词(分类名字,分类URL标识) */
+                keyword?: string;
+                /** @description 页数 */
+                page?: number;
+                /** @description 大小 */
+                size?: number;
             };
             header?: never;
             path?: never;
@@ -2306,8 +2251,13 @@ export interface operations {
     };
     getTags_1: {
         parameters: {
-            query: {
-                dto: components["schemas"]["QueryTagDTO"];
+            query?: {
+                /** @description 标签关键词(标签名字,标签URL标识) */
+                keyword?: string;
+                /** @description 页数 */
+                page?: number;
+                /** @description 大小 */
+                size?: number;
             };
             header?: never;
             path?: never;
@@ -2352,8 +2302,11 @@ export interface operations {
     };
     getTopComments: {
         parameters: {
-            query: {
-                dto: components["schemas"]["BaseQueryDTO"];
+            query?: {
+                /** @description 页数 */
+                page?: number;
+                /** @description 大小 */
+                size?: number;
             };
             header?: never;
             path: {
@@ -2376,8 +2329,13 @@ export interface operations {
     };
     getCategories_1: {
         parameters: {
-            query: {
-                dto: components["schemas"]["QueryCategoriesDTO"];
+            query?: {
+                /** @description 分类关键词(分类名字,分类URL标识) */
+                keyword?: string;
+                /** @description 页数 */
+                page?: number;
+                /** @description 大小 */
+                size?: number;
             };
             header?: never;
             path?: never;
@@ -2398,8 +2356,19 @@ export interface operations {
     };
     getHomeArticles: {
         parameters: {
-            query: {
-                dto: components["schemas"]["QueryArticleDTO"];
+            query?: {
+                /** @description 文章分类 */
+                category?: number;
+                /** @description 文章关键词(文章标题,文章URL标识,文章内容) */
+                keyword?: string;
+                /** @description 文章标签 */
+                tagIds?: number[];
+                /** @description 文章状态 */
+                articleStatus?: "DRAFT" | "PUBLISHED" | "ARCHIVED";
+                /** @description 页数 */
+                page?: number;
+                /** @description 大小 */
+                size?: number;
             };
             header?: never;
             path?: never;
@@ -2420,8 +2389,13 @@ export interface operations {
     };
     getPermissions: {
         parameters: {
-            query: {
-                dto: components["schemas"]["QueryPermissionDTO"];
+            query?: {
+                /** @description 权限关键词(权限标识符,权限名字,权限描述) */
+                keyword?: string;
+                /** @description 页数 */
+                page?: number;
+                /** @description 大小 */
+                size?: number;
             };
             header?: never;
             path?: never;
@@ -2442,8 +2416,13 @@ export interface operations {
     };
     getComments: {
         parameters: {
-            query: {
-                dto: components["schemas"]["QueryCommentDTO"];
+            query?: {
+                /** @description 评论关键词(评论内容) */
+                keyword?: string;
+                /** @description 页数 */
+                page?: number;
+                /** @description 大小 */
+                size?: number;
             };
             header?: never;
             path?: never;

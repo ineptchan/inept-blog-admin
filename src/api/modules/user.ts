@@ -6,7 +6,7 @@ export const userApi = {
                 params: {
                     query: {
                         keyword: keyword,
-                        page: page,
+                        page: page - 1,
                         size: size,
                     }
                 }

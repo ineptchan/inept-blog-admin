@@ -286,11 +286,32 @@ paths:
       summary: 获取角色列表
       operationId: getRoles
       parameters:
-      - name: dto
+      - name: keyword
         in: query
-        required: true
+        description: "角色关键词(角色标识符 ,角色名字,角色描述)"
+        required: false
         schema:
-          $ref: "#/components/schemas/QueryRoleDTO"
+          type: string
+          description: openapi.role.query_keyword
+      - name: page
+        in: query
+        description: 页数
+        required: false
+        schema:
+          type: integer
+          format: int32
+          description: openapi.query.page
+          minimum: 0
+      - name: size
+        in: query
+        description: 大小
+        required: false
+        schema:
+          type: integer
+          format: int32
+          description: openapi.query.size
+          maximum: 9223372036854775807
+          minimum: 0
       responses:
         "200":
           description: OK
@@ -438,11 +459,32 @@ paths:
       summary: 获取标签列表
       operationId: getTags
       parameters:
-      - name: dto
+      - name: keyword
         in: query
-        required: true
+        description: "标签关键词(标签名字,标签URL标识)"
+        required: false
         schema:
-          $ref: "#/components/schemas/QueryTagDTO"
+          type: string
+          description: openapi.tag.query_keyword
+      - name: page
+        in: query
+        description: 页数
+        required: false
+        schema:
+          type: integer
+          format: int32
+          description: openapi.query.page
+          minimum: 0
+      - name: size
+        in: query
+        description: 大小
+        required: false
+        schema:
+          type: integer
+          format: int32
+          description: openapi.query.size
+          maximum: 9223372036854775807
+          minimum: 0
       responses:
         "200":
           description: OK
@@ -577,11 +619,32 @@ paths:
       summary: 获取分类列表
       operationId: getCategories
       parameters:
-      - name: dto
+      - name: keyword
         in: query
-        required: true
+        description: "分类关键词(分类名字,分类URL标识)"
+        required: false
         schema:
-          $ref: "#/components/schemas/QueryCategoriesDTO"
+          type: string
+          description: openapi.categories.query_keyword
+      - name: page
+        in: query
+        description: 页数
+        required: false
+        schema:
+          type: integer
+          format: int32
+          description: openapi.query.page
+          minimum: 0
+      - name: size
+        in: query
+        description: 大小
+        required: false
+        schema:
+          type: integer
+          format: int32
+          description: openapi.query.size
+          maximum: 9223372036854775807
+          minimum: 0
       responses:
         "200":
           description: OK
@@ -998,11 +1061,32 @@ paths:
       summary: 获取标签列表
       operationId: getTags_1
       parameters:
-      - name: dto
+      - name: keyword
         in: query
-        required: true
+        description: "标签关键词(标签名字,标签URL标识)"
+        required: false
         schema:
-          $ref: "#/components/schemas/QueryTagDTO"
+          type: string
+          description: openapi.tag.query_keyword
+      - name: page
+        in: query
+        description: 页数
+        required: false
+        schema:
+          type: integer
+          format: int32
+          description: openapi.query.page
+          minimum: 0
+      - name: size
+        in: query
+        description: 大小
+        required: false
+        schema:
+          type: integer
+          format: int32
+          description: openapi.query.size
+          maximum: 9223372036854775807
+          minimum: 0
       responses:
         "200":
           description: OK
@@ -1048,11 +1132,25 @@ paths:
         schema:
           type: integer
           format: int64
-      - name: dto
+      - name: page
         in: query
-        required: true
+        description: 页数
+        required: false
         schema:
-          $ref: "#/components/schemas/BaseQueryDTO"
+          type: integer
+          format: int32
+          description: openapi.query.page
+          minimum: 0
+      - name: size
+        in: query
+        description: 大小
+        required: false
+        schema:
+          type: integer
+          format: int32
+          description: openapi.query.size
+          maximum: 9223372036854775807
+          minimum: 0
       responses:
         "200":
           description: OK
@@ -1067,11 +1165,32 @@ paths:
       summary: 获取分类列表
       operationId: getCategories_1
       parameters:
-      - name: dto
+      - name: keyword
         in: query
-        required: true
+        description: "分类关键词(分类名字,分类URL标识)"
+        required: false
         schema:
-          $ref: "#/components/schemas/QueryCategoriesDTO"
+          type: string
+          description: openapi.categories.query_keyword
+      - name: page
+        in: query
+        description: 页数
+        required: false
+        schema:
+          type: integer
+          format: int32
+          description: openapi.query.page
+          minimum: 0
+      - name: size
+        in: query
+        description: 大小
+        required: false
+        schema:
+          type: integer
+          format: int32
+          description: openapi.query.size
+          maximum: 9223372036854775807
+          minimum: 0
       responses:
         "200":
           description: OK
@@ -1086,11 +1205,62 @@ paths:
       summary: 获取主页文章列表
       operationId: getHomeArticles
       parameters:
-      - name: dto
+      - name: category
         in: query
-        required: true
+        description: 文章分类
+        required: false
         schema:
-          $ref: "#/components/schemas/QueryArticleDTO"
+          type: integer
+          format: int64
+          description: openapi.article.category
+      - name: keyword
+        in: query
+        description: "文章关键词(文章标题,文章URL标识,文章内容)"
+        required: false
+        schema:
+          type: string
+          description: openapi.article.query_keyword
+      - name: tagIds
+        in: query
+        description: 文章标签
+        required: false
+        schema:
+          type: array
+          description: openapi.article.tags
+          items:
+            type: integer
+            format: int64
+            description: openapi.article.tags
+      - name: articleStatus
+        in: query
+        description: 文章状态
+        required: false
+        schema:
+          type: string
+          description: openapi.article.article_status
+          enum:
+          - DRAFT
+          - PUBLISHED
+          - ARCHIVED
+      - name: page
+        in: query
+        description: 页数
+        required: false
+        schema:
+          type: integer
+          format: int32
+          description: openapi.query.page
+          minimum: 0
+      - name: size
+        in: query
+        description: 大小
+        required: false
+        schema:
+          type: integer
+          format: int32
+          description: openapi.query.size
+          maximum: 9223372036854775807
+          minimum: 0
       responses:
         "200":
           description: OK
@@ -1105,11 +1275,32 @@ paths:
       summary: 获取权限列表
       operationId: getPermissions
       parameters:
-      - name: dto
+      - name: keyword
         in: query
-        required: true
+        description: "权限关键词(权限标识符,权限名字,权限描述)"
+        required: false
         schema:
-          $ref: "#/components/schemas/QueryPermissionDTO"
+          type: string
+          description: openapi.permission.query_keyword
+      - name: page
+        in: query
+        description: 页数
+        required: false
+        schema:
+          type: integer
+          format: int32
+          description: openapi.query.page
+          minimum: 0
+      - name: size
+        in: query
+        description: 大小
+        required: false
+        schema:
+          type: integer
+          format: int32
+          description: openapi.query.size
+          maximum: 9223372036854775807
+          minimum: 0
       responses:
         "200":
           description: OK
@@ -1126,11 +1317,32 @@ paths:
       summary: 获取评论列表
       operationId: getComments
       parameters:
-      - name: dto
+      - name: keyword
         in: query
-        required: true
+        description: 评论关键词(评论内容)
+        required: false
         schema:
-          $ref: "#/components/schemas/QueryCommentDTO"
+          type: string
+          description: openapi.comment.query_keyword
+      - name: page
+        in: query
+        description: 页数
+        required: false
+        schema:
+          type: integer
+          format: int32
+          description: openapi.query.page
+          minimum: 0
+      - name: size
+        in: query
+        description: 大小
+        required: false
+        schema:
+          type: integer
+          format: int32
+          description: openapi.query.size
+          maximum: 9223372036854775807
+          minimum: 0
       responses:
         "200":
           description: OK
@@ -1798,23 +2010,6 @@ components:
       - permissionCodes
       - status
       - username
-    QueryRoleDTO:
-      type: object
-      properties:
-        keyword:
-          type: string
-          description: "角色关键词(角色标识符 ,角色名字,角色描述)"
-        page:
-          type: integer
-          format: int32
-          description: 页数
-        size:
-          type: integer
-          format: int32
-          description: 大小
-      required:
-      - page
-      - size
     PageResponseRoleVO:
       type: object
       properties:
@@ -1845,23 +2040,6 @@ components:
       - size
       - totalElements
       - totalPages
-    QueryTagDTO:
-      type: object
-      properties:
-        keyword:
-          type: string
-          description: "标签关键词(标签名字,标签URL标识)"
-        page:
-          type: integer
-          format: int32
-          description: 页数
-        size:
-          type: integer
-          format: int32
-          description: 大小
-      required:
-      - page
-      - size
     PageResponseTagVO:
       type: object
       properties:
@@ -2010,23 +2188,6 @@ components:
       - createdAt
       - id
       - user
-    QueryCategoriesDTO:
-      type: object
-      properties:
-        keyword:
-          type: string
-          description: "分类关键词(分类名字,分类URL标识)"
-        page:
-          type: integer
-          format: int32
-          description: 页数
-        size:
-          type: integer
-          format: int32
-          description: 大小
-      required:
-      - page
-      - size
     PageResponseCategoriesVO:
       type: object
       properties:
@@ -2057,40 +2218,6 @@ components:
       - size
       - totalElements
       - totalPages
-    QueryArticleDTO:
-      type: object
-      properties:
-        category:
-          type: integer
-          format: int64
-          description: 文章分类
-        keyword:
-          type: string
-          description: "文章关键词(文章标题,文章URL标识,文章内容)"
-        tagIds:
-          type: array
-          description: 文章标签
-          items:
-            type: integer
-            format: int64
-        articleStatus:
-          type: string
-          description: 文章状态
-          enum:
-          - DRAFT
-          - PUBLISHED
-          - ARCHIVED
-        page:
-          type: integer
-          format: int32
-          description: 页数
-        size:
-          type: integer
-          format: int32
-          description: 大小
-      required:
-      - page
-      - size
     HomeArticleVO:
       type: object
       properties:
@@ -2167,23 +2294,6 @@ components:
       - size
       - totalElements
       - totalPages
-    QueryPermissionDTO:
-      type: object
-      properties:
-        keyword:
-          type: string
-          description: "权限关键词(权限标识符,权限名字,权限描述)"
-        page:
-          type: integer
-          format: int32
-          description: 页数
-        size:
-          type: integer
-          format: int32
-          description: 大小
-      required:
-      - page
-      - size
     PageResponsePermissionVO:
       type: object
       properties:
@@ -2244,23 +2354,6 @@ components:
       - size
       - totalElements
       - totalPages
-    QueryCommentDTO:
-      type: object
-      properties:
-        keyword:
-          type: string
-          description: 评论关键词(评论内容)
-        page:
-          type: integer
-          format: int32
-          description: 页数
-        size:
-          type: integer
-          format: int32
-          description: 大小
-      required:
-      - page
-      - size
     PageResponseCommentVO:
       type: object
       properties:
@@ -2291,6 +2384,40 @@ components:
       - size
       - totalElements
       - totalPages
+    QueryArticleDTO:
+      type: object
+      properties:
+        category:
+          type: integer
+          format: int64
+          description: 文章分类
+        keyword:
+          type: string
+          description: "文章关键词(文章标题,文章URL标识,文章内容)"
+        tagIds:
+          type: array
+          description: 文章标签
+          items:
+            type: integer
+            format: int64
+        articleStatus:
+          type: string
+          description: 文章状态
+          enum:
+          - DRAFT
+          - PUBLISHED
+          - ARCHIVED
+        page:
+          type: integer
+          format: int32
+          description: 页数
+        size:
+          type: integer
+          format: int32
+          description: 大小
+      required:
+      - page
+      - size
   securitySchemes:
     accessToken:
       type: http

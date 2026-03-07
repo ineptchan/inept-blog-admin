@@ -4,7 +4,6 @@ import AdminLayout from "@/layout/AdminLayout.vue"
 const router = createRouter({
     history: createWebHistory(),
     routes: [
-        {path: '/dev', name: 'dev', component: () => import('../views/DevView.vue')},
         {path: '/login', name: 'login', component: () => import('../views/LoginView.vue')},
         {
             path: '/:pathMatch(.*)*',
@@ -30,7 +29,12 @@ const router = createRouter({
                 {
                     path: 'roles',
                     component: () => import('@/views/system/roles/index.vue'),
-                    meta: {title: '角色权限'}
+                    meta: {title: '角色'}
+                },
+                {
+                    path: 'permissions',
+                    component: () => import('@/views/system/permissions/index.vue'),
+                    meta: {title: '权限'}
                 },
                 {
                     path: 'dev',
