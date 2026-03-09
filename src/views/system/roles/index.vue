@@ -2,26 +2,34 @@
 import {onMounted, ref} from "vue"
 import PageCard from "@/components/PageCard.vue"
 import {roleApi} from "@/api/modules/role.ts"
-
-interface RolePermissionItem {
-  id: number
-  code: string
-  name: string
-  description?: string
-}
-
-interface RoleItem {
-  id: number
-  code: string
-  name: string
-  description?: string
-}
+import {Plus} from "@element-plus/icons-vue"
+import CreateRoleForm from "@/components/role/CreateRoleForm.vue"
+import EditRoleForm from "@/components/role/EditRoleForm.vue"
 
 const isRoleListLoading = ref(false)
 const isRolePermissionListLoading = ref(false)
 const isRolePermissionDialogVisible = ref(false)
+const isCreateRoleDialogVisible = ref(false)
+const isEditRoleDialogVisible = ref(false)
+const editRoleId = ref(0)
 
-const rolePermissionList = ref<RolePermissionItem[]>([])
+const onEditRole = (role: RoleType) => {
+  editRoleId.value = role.id
+  isEditRoleDialogVisible.value = true
+}
+
+const onEditRoleSuccess = () => {
+  isEditRoleDialogVisible.value = false
+  fetchRoleList()
+}
+
+
+const onCreateRoleSuccess = () => {
+  isCreateRoleDialogVisible.value = false
+  fetchRoleList()
+}
+
+const rolePermissionList = ref<RoleType[]>([])
 
 const roleListQuery = ref<PageQueryRequest>({
   keyword: "",
@@ -29,7 +37,7 @@ const roleListQuery = ref<PageQueryRequest>({
   pageSize: 20
 })
 
-const roleListQueryResult = ref<PageQueryResponse<RoleItem>>({
+const roleListQueryResult = ref<PageQueryResponse<RoleType>>({
   content: [],
   page: 1,
   size: 0,
@@ -83,6 +91,7 @@ onMounted(() => {
           />
           <el-button type="primary" plain @click="fetchRoleList">搜索</el-button>
         </div>
+        <el-button :icon="Plus" type="primary" @click="isCreateRoleDialogVisible = true">创建角色</el-button>
       </div>
       <el-table
           v-loading="isRoleListLoading"
@@ -105,7 +114,7 @@ onMounted(() => {
             >
               权限
             </el-button>
-            <el-button link size="small" type="primary">编辑</el-button>
+            <el-button link size="small" type="primary" @click="onEditRole(row)">编辑</el-button>
             <el-button disabled link size="small" type="danger">删除</el-button>
           </template>
         </el-table-column>
@@ -137,6 +146,20 @@ onMounted(() => {
         <el-table-column label="名字" prop="name" width="250"/>
         <el-table-column label="描述" min-width="300" prop="description"/>
       </el-table>
+    </el-dialog>
+    <el-dialog
+        v-model="isCreateRoleDialogVisible"
+        title="创建角色"
+        width="380"
+    >
+      <CreateRoleForm @success="onCreateRoleSuccess"/>
+    </el-dialog>
+    <el-dialog
+        v-model="isEditRoleDialogVisible"
+        title="编辑角色"
+        width="380"
+    >
+      <EditRoleForm :id="editRoleId" @success="onEditRoleSuccess"/>
     </el-dialog>
   </div>
 </template>

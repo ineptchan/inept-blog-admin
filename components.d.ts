@@ -15,6 +15,8 @@ declare module 'vue' {
     CountDemo: typeof import('./src/components/CountDemo.vue')['default']
     CountModelDemo: typeof import('./src/components/CountModelDemo.vue')['default']
     CountSlotsDeom: typeof import('./src/components/CountSlotsDeom.vue')['default']
+    CreateRoleForm: typeof import('./src/components/role/CreateRoleForm.vue')['default']
+    EditRoleForm: typeof import('./src/components/role/EditRoleForm.vue')['default']
     ElAside: typeof import('element-plus/es')['ElAside']
     ElAvatar: typeof import('element-plus/es')['ElAvatar']
     ElBadge: typeof import('element-plus/es')['ElBadge']

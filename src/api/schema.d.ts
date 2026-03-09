@@ -1,41 +1,4 @@
 export interface paths {
-    "/role/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** 根据id获取角色 */
-        get: operations["getRoleById"];
-        /** 更新角色 */
-        put: operations["updateRole"];
-        post?: never;
-        /** 删除角色 */
-        delete: operations["deleteRole"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/permission/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** 根据id获取权限 */
-        get: operations["getPermissionById"];
-        /** 更新权限 */
-        put: operations["updatePermission"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/admin/articles/{id}/video": {
         parameters: {
             query?: never;
@@ -138,24 +101,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/role": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** 获取角色列表 */
-        get: operations["getRoles"];
-        put?: never;
-        /** 创建角色 */
-        post: operations["createRole"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/auth/refresh": {
         parameters: {
             query?: never;
@@ -237,6 +182,24 @@ export interface paths {
         put?: never;
         /** 创建标签 */
         post: operations["createTag"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/role": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 获取角色列表 */
+        get: operations["getRoles"];
+        put?: never;
+        /** 创建角色 */
+        post: operations["createRole"];
         delete?: never;
         options?: never;
         head?: never;
@@ -355,6 +318,43 @@ export interface paths {
         patch: operations["updateTag"];
         trace?: never;
     };
+    "/admin/role/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 根据id获取角色 */
+        get: operations["getRoleById"];
+        put?: never;
+        post?: never;
+        /** 删除角色 */
+        delete: operations["deleteRole"];
+        options?: never;
+        head?: never;
+        /** 更新角色 */
+        patch: operations["updateRole"];
+        trace?: never;
+    };
+    "/admin/permission/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 根据id获取权限 */
+        get: operations["getPermissionById"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** 更新权限 */
+        patch: operations["updatePermission"];
+        trace?: never;
+    };
     "/admin/categories/{id}": {
         parameters: {
             query?: never;
@@ -391,23 +391,6 @@ export interface paths {
         head?: never;
         /** 更新文章 */
         patch: operations["updateArticle"];
-        trace?: never;
-    };
-    "/role/{id}/permissions": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** 获取角色绑定的权限 */
-        get: operations["getRoleBindPermissions"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
         trace?: never;
     };
     "/public/tag": {
@@ -495,7 +478,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/permission": {
+    "/admin/role/{id}/permissions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 获取角色绑定的权限 */
+        get: operations["getRoleBindPermissions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/permission": {
         parameters: {
             query?: never;
             header?: never;
@@ -550,46 +550,6 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        UpdateRoleDTO: {
-            /** @description 角色标识符 */
-            code?: string;
-            /** @description 角色名字 */
-            name?: string;
-            /** @description 角色描述 */
-            description?: string;
-        };
-        RoleVO: {
-            /**
-             * Format: int64
-             * @description 角色id
-             */
-            id: number;
-            /** @description 角色标识符 */
-            code: string;
-            /** @description 角色名字 */
-            name: string;
-            /** @description 角色描述 */
-            description?: string;
-        };
-        UpdatePermissionDTO: {
-            /** @description 权限名字 */
-            name?: string;
-            /** @description 权限描述 */
-            description?: string;
-        };
-        PermissionVO: {
-            /**
-             * Format: int64
-             * @description 权限id
-             */
-            id: number;
-            /** @description 权限标识符 */
-            code: string;
-            /** @description 权限名字 */
-            name: string;
-            /** @description 权限描述 */
-            description?: string;
-        };
         UploadArticleVideoDTO: {
             /**
              * Format: binary
@@ -685,14 +645,6 @@ export interface components {
             /** @description 昵称 */
             nickname: string;
         };
-        CreateRoleDTO: {
-            /** @description 角色标识符 */
-            code: string;
-            /** @description 角色名字 */
-            name: string;
-            /** @description 角色描述 */
-            description?: string;
-        };
         RefreshVO: {
             /** @description openai.auth.access_token */
             accessToken: string;
@@ -761,6 +713,27 @@ export interface components {
             name: string;
             /** @description 标签URL标识 */
             slug: string;
+        };
+        CreateRoleDTO: {
+            /** @description 角色标识符 */
+            code: string;
+            /** @description 角色名字 */
+            name: string;
+            /** @description 角色描述 */
+            description?: string;
+        };
+        RoleVO: {
+            /**
+             * Format: int64
+             * @description 角色id
+             */
+            id: number;
+            /** @description 角色标识符 */
+            code: string;
+            /** @description 角色名字 */
+            name: string;
+            /** @description 角色描述 */
+            description?: string;
         };
         CreateCategoriesDTO: {
             /** @description 分类名字 */
@@ -861,6 +834,33 @@ export interface components {
             /** @description 标签URL标识 */
             slug?: string;
         };
+        UpdateRoleDTO: {
+            /** @description 角色标识符 */
+            code?: string;
+            /** @description 角色名字 */
+            name?: string;
+            /** @description 角色描述 */
+            description?: string;
+        };
+        UpdatePermissionDTO: {
+            /** @description 权限名字 */
+            name?: string;
+            /** @description 权限描述 */
+            description?: string;
+        };
+        PermissionVO: {
+            /**
+             * Format: int64
+             * @description 权限id
+             */
+            id: number;
+            /** @description 权限标识符 */
+            code: string;
+            /** @description 权限名字 */
+            name: string;
+            /** @description 权限描述 */
+            description?: string;
+        };
         UpdateCommentDTO: {
             /** @description 评论内容 */
             content?: string;
@@ -909,30 +909,6 @@ export interface components {
             status: boolean;
             /** @description openapi.permission.permission */
             permissionCodes: string[];
-        };
-        PageResponseRoleVO: {
-            /** @description 当前页数据列表 */
-            content: components["schemas"]["RoleVO"][];
-            /**
-             * Format: int32
-             * @description 当前页号
-             */
-            page: number;
-            /**
-             * Format: int32
-             * @description 每页大小
-             */
-            size: number;
-            /**
-             * Format: int64
-             * @description 总条数
-             */
-            totalElements: number;
-            /**
-             * Format: int32
-             * @description 总页数
-             */
-            totalPages: number;
         };
         PageResponseTagVO: {
             /** @description 当前页数据列表 */
@@ -1124,9 +1100,9 @@ export interface components {
              */
             totalPages: number;
         };
-        PageResponsePermissionVO: {
+        PageResponseUserVO: {
             /** @description 当前页数据列表 */
-            content: components["schemas"]["PermissionVO"][];
+            content: components["schemas"]["UserVO"][];
             /**
              * Format: int32
              * @description 当前页号
@@ -1148,9 +1124,33 @@ export interface components {
              */
             totalPages: number;
         };
-        PageResponseUserVO: {
+        PageResponseRoleVO: {
             /** @description 当前页数据列表 */
-            content: components["schemas"]["UserVO"][];
+            content: components["schemas"]["RoleVO"][];
+            /**
+             * Format: int32
+             * @description 当前页号
+             */
+            page: number;
+            /**
+             * Format: int32
+             * @description 每页大小
+             */
+            size: number;
+            /**
+             * Format: int64
+             * @description 总条数
+             */
+            totalElements: number;
+            /**
+             * Format: int32
+             * @description 总页数
+             */
+            totalPages: number;
+        };
+        PageResponsePermissionVO: {
+            /** @description 当前页数据列表 */
+            content: components["schemas"]["PermissionVO"][];
             /**
              * Format: int32
              * @description 当前页号
@@ -1231,122 +1231,6 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    getRoleById: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["RoleVO"];
-                };
-            };
-        };
-    };
-    updateRole: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateRoleDTO"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["RoleVO"];
-                };
-            };
-        };
-    };
-    deleteRole: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    getPermissionById: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["PermissionVO"];
-                };
-            };
-        };
-    };
-    updatePermission: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdatePermissionDTO"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["PermissionVO"];
-                };
-            };
-        };
-    };
     uploadVideo: {
         parameters: {
             query: {
@@ -1490,57 +1374,6 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["CommentVO"];
-                };
-            };
-        };
-    };
-    getRoles: {
-        parameters: {
-            query?: {
-                /** @description 角色关键词(角色标识符 ,角色名字,角色描述) */
-                keyword?: string;
-                /** @description 页数 */
-                page?: number;
-                /** @description 大小 */
-                size?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["PageResponseRoleVO"];
-                };
-            };
-        };
-    };
-    createRole: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateRoleDTO"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["RoleVO"];
                 };
             };
         };
@@ -1707,6 +1540,57 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["TagVO"];
+                };
+            };
+        };
+    };
+    getRoles: {
+        parameters: {
+            query?: {
+                /** @description 角色关键词(角色标识符 ,角色名字,角色描述) */
+                keyword?: string;
+                /** @description 页数 */
+                page?: number;
+                /** @description 大小 */
+                size?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PageResponseRoleVO"];
+                };
+            };
+        };
+    };
+    createRole: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateRoleDTO"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["RoleVO"];
                 };
             };
         };
@@ -2087,6 +1971,122 @@ export interface operations {
             };
         };
     };
+    getRoleById: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["RoleVO"];
+                };
+            };
+        };
+    };
+    deleteRole: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    updateRole: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateRoleDTO"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["RoleVO"];
+                };
+            };
+        };
+    };
+    getPermissionById: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PermissionVO"];
+                };
+            };
+        };
+    };
+    updatePermission: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdatePermissionDTO"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PermissionVO"];
+                };
+            };
+        };
+    };
     getCategoriesById: {
         parameters: {
             query?: never;
@@ -2227,28 +2227,6 @@ export interface operations {
             };
         };
     };
-    getRoleBindPermissions: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["PermissionVO"][];
-                };
-            };
-        };
-    };
     getTags_1: {
         parameters: {
             query?: {
@@ -2383,6 +2361,28 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["PageResponseHomeArticleVO"];
+                };
+            };
+        };
+    };
+    getRoleBindPermissions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PermissionVO"][];
                 };
             };
         };

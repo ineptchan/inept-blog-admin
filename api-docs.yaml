@@ -6,121 +6,6 @@ servers:
 - url: http://127.0.0.1:8080
   description: Generated server url
 paths:
-  /role/{id}:
-    get:
-      tags:
-      - 角色接口
-      summary: 根据id获取角色
-      operationId: getRoleById
-      parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
-      responses:
-        "200":
-          description: OK
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/RoleVO"
-      security:
-      - accessToken: []
-    put:
-      tags:
-      - 角色接口
-      summary: 更新角色
-      operationId: updateRole
-      parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UpdateRoleDTO"
-        required: true
-      responses:
-        "200":
-          description: OK
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/RoleVO"
-      security:
-      - accessToken: []
-    delete:
-      tags:
-      - 角色接口
-      summary: 删除角色
-      operationId: deleteRole
-      parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
-      responses:
-        "200":
-          description: OK
-      security:
-      - accessToken: []
-  /permission/{id}:
-    get:
-      tags:
-      - 权限接口
-      summary: 根据id获取权限
-      operationId: getPermissionById
-      parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
-      responses:
-        "200":
-          description: OK
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/PermissionVO"
-      security:
-      - accessToken: []
-    put:
-      tags:
-      - 权限接口
-      summary: 更新权限
-      operationId: updatePermission
-      parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UpdatePermissionDTO"
-        required: true
-      responses:
-        "200":
-          description: OK
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/PermissionVO"
-      security:
-      - accessToken: []
   /admin/articles/{id}/video:
     put:
       tags:
@@ -277,68 +162,6 @@ paths:
             '*/*':
               schema:
                 $ref: "#/components/schemas/CommentVO"
-      security:
-      - accessToken: []
-  /role:
-    get:
-      tags:
-      - 角色接口
-      summary: 获取角色列表
-      operationId: getRoles
-      parameters:
-      - name: keyword
-        in: query
-        description: "角色关键词(角色标识符 ,角色名字,角色描述)"
-        required: false
-        schema:
-          type: string
-          description: openapi.role.query_keyword
-      - name: page
-        in: query
-        description: 页数
-        required: false
-        schema:
-          type: integer
-          format: int32
-          description: openapi.query.page
-          minimum: 0
-      - name: size
-        in: query
-        description: 大小
-        required: false
-        schema:
-          type: integer
-          format: int32
-          description: openapi.query.size
-          maximum: 9223372036854775807
-          minimum: 0
-      responses:
-        "200":
-          description: OK
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/PageResponseRoleVO"
-      security:
-      - accessToken: []
-    post:
-      tags:
-      - 角色接口
-      summary: 创建角色
-      operationId: createRole
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CreateRoleDTO"
-        required: true
-      responses:
-        "200":
-          description: OK
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/RoleVO"
       security:
       - accessToken: []
   /auth/refresh:
@@ -512,6 +335,68 @@ paths:
             '*/*':
               schema:
                 $ref: "#/components/schemas/TagVO"
+      security:
+      - accessToken: []
+  /admin/role:
+    get:
+      tags:
+      - 角色接口
+      summary: 获取角色列表
+      operationId: getRoles
+      parameters:
+      - name: keyword
+        in: query
+        description: "角色关键词(角色标识符 ,角色名字,角色描述)"
+        required: false
+        schema:
+          type: string
+          description: openapi.role.query_keyword
+      - name: page
+        in: query
+        description: 页数
+        required: false
+        schema:
+          type: integer
+          format: int32
+          description: openapi.query.page
+          minimum: 0
+      - name: size
+        in: query
+        description: 大小
+        required: false
+        schema:
+          type: integer
+          format: int32
+          description: openapi.query.size
+          maximum: 9223372036854775807
+          minimum: 0
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponseRoleVO"
+      security:
+      - accessToken: []
+    post:
+      tags:
+      - 角色接口
+      summary: 创建角色
+      operationId: createRole
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateRoleDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/RoleVO"
       security:
       - accessToken: []
   /admin/comment/{id}:
@@ -890,6 +775,121 @@ paths:
                 $ref: "#/components/schemas/TagVO"
       security:
       - accessToken: []
+  /admin/role/{id}:
+    get:
+      tags:
+      - 角色接口
+      summary: 根据id获取角色
+      operationId: getRoleById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/RoleVO"
+      security:
+      - accessToken: []
+    delete:
+      tags:
+      - 角色接口
+      summary: 删除角色
+      operationId: deleteRole
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+      security:
+      - accessToken: []
+    patch:
+      tags:
+      - 角色接口
+      summary: 更新角色
+      operationId: updateRole
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateRoleDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/RoleVO"
+      security:
+      - accessToken: []
+  /admin/permission/{id}:
+    get:
+      tags:
+      - 权限接口
+      summary: 根据id获取权限
+      operationId: getPermissionById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PermissionVO"
+      security:
+      - accessToken: []
+    patch:
+      tags:
+      - 权限接口
+      summary: 更新权限
+      operationId: updatePermission
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePermissionDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PermissionVO"
+      security:
+      - accessToken: []
   /admin/categories/{id}:
     get:
       tags:
@@ -1028,30 +1028,6 @@ paths:
             '*/*':
               schema:
                 $ref: "#/components/schemas/ArticleVO"
-      security:
-      - accessToken: []
-  /role/{id}/permissions:
-    get:
-      tags:
-      - 角色接口
-      summary: 获取角色绑定的权限
-      operationId: getRoleBindPermissions
-      parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
-      responses:
-        "200":
-          description: OK
-          content:
-            '*/*':
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/PermissionVO"
       security:
       - accessToken: []
   /public/tag:
@@ -1268,7 +1244,31 @@ paths:
             '*/*':
               schema:
                 $ref: "#/components/schemas/PageResponseHomeArticleVO"
-  /permission:
+  /admin/role/{id}/permissions:
+    get:
+      tags:
+      - 角色接口
+      summary: 获取角色绑定的权限
+      operationId: getRoleBindPermissions
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PermissionVO"
+      security:
+      - accessToken: []
+  /admin/permission:
     get:
       tags:
       - 权限接口
@@ -1381,72 +1381,6 @@ paths:
       - accessToken: []
 components:
   schemas:
-    UpdateRoleDTO:
-      type: object
-      properties:
-        code:
-          type: string
-          description: 角色标识符
-          pattern: "^[A-Za-z]+$"
-        name:
-          type: string
-          description: 角色名字
-          maxLength: 24
-          minLength: 2
-        description:
-          type: string
-          description: 角色描述
-    RoleVO:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-          description: 角色id
-        code:
-          type: string
-          description: 角色标识符
-        name:
-          type: string
-          description: 角色名字
-        description:
-          type: string
-          description: 角色描述
-      required:
-      - code
-      - id
-      - name
-    UpdatePermissionDTO:
-      type: object
-      properties:
-        name:
-          type: string
-          description: 权限名字
-          maxLength: 24
-          minLength: 2
-        description:
-          type: string
-          description: 权限描述
-    PermissionVO:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-          description: 权限id
-        code:
-          type: string
-          description: 权限标识符
-        name:
-          type: string
-          description: 权限名字
-        description:
-          type: string
-          description: 权限描述
-      required:
-      - code
-      - id
-      - name
     UploadArticleVideoDTO:
       type: object
       properties:
@@ -1586,24 +1520,6 @@ components:
       required:
       - id
       - nickname
-    CreateRoleDTO:
-      type: object
-      properties:
-        code:
-          type: string
-          description: 角色标识符
-          pattern: "^[A-Za-z]+$"
-        name:
-          type: string
-          description: 角色名字
-          maxLength: 24
-          minLength: 2
-        description:
-          type: string
-          description: 角色描述
-      required:
-      - code
-      - name
     RefreshVO:
       type: object
       properties:
@@ -1744,6 +1660,44 @@ components:
       - id
       - name
       - slug
+    CreateRoleDTO:
+      type: object
+      properties:
+        code:
+          type: string
+          description: 角色标识符
+          pattern: "^[A-Za-z]+$"
+        name:
+          type: string
+          description: 角色名字
+          maxLength: 24
+          minLength: 2
+        description:
+          type: string
+          description: 角色描述
+      required:
+      - code
+      - name
+    RoleVO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: 角色id
+        code:
+          type: string
+          description: 角色标识符
+        name:
+          type: string
+          description: 角色名字
+        description:
+          type: string
+          description: 角色描述
+      required:
+      - code
+      - id
+      - name
     CreateCategoriesDTO:
       type: object
       properties:
@@ -1926,6 +1880,52 @@ components:
           type: string
           description: 标签URL标识
           pattern: "^[a-z0-9]+(-[a-z0-9]+)*$"
+    UpdateRoleDTO:
+      type: object
+      properties:
+        code:
+          type: string
+          description: 角色标识符
+          pattern: "^[A-Za-z]+$"
+        name:
+          type: string
+          description: 角色名字
+          maxLength: 24
+          minLength: 2
+        description:
+          type: string
+          description: 角色描述
+    UpdatePermissionDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 权限名字
+          maxLength: 24
+          minLength: 2
+        description:
+          type: string
+          description: 权限描述
+    PermissionVO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: 权限id
+        code:
+          type: string
+          description: 权限标识符
+        name:
+          type: string
+          description: 权限名字
+        description:
+          type: string
+          description: 权限描述
+      required:
+      - code
+      - id
+      - name
     UpdateCommentDTO:
       type: object
       properties:
@@ -2010,36 +2010,6 @@ components:
       - permissionCodes
       - status
       - username
-    PageResponseRoleVO:
-      type: object
-      properties:
-        content:
-          type: array
-          description: 当前页数据列表
-          items:
-            $ref: "#/components/schemas/RoleVO"
-        page:
-          type: integer
-          format: int32
-          description: 当前页号
-        size:
-          type: integer
-          format: int32
-          description: 每页大小
-        totalElements:
-          type: integer
-          format: int64
-          description: 总条数
-        totalPages:
-          type: integer
-          format: int32
-          description: 总页数
-      required:
-      - content
-      - page
-      - size
-      - totalElements
-      - totalPages
     PageResponseTagVO:
       type: object
       properties:
@@ -2294,14 +2264,14 @@ components:
       - size
       - totalElements
       - totalPages
-    PageResponsePermissionVO:
+    PageResponseUserVO:
       type: object
       properties:
         content:
           type: array
           description: 当前页数据列表
           items:
-            $ref: "#/components/schemas/PermissionVO"
+            $ref: "#/components/schemas/UserVO"
         page:
           type: integer
           format: int32
@@ -2324,14 +2294,44 @@ components:
       - size
       - totalElements
       - totalPages
-    PageResponseUserVO:
+    PageResponseRoleVO:
       type: object
       properties:
         content:
           type: array
           description: 当前页数据列表
           items:
-            $ref: "#/components/schemas/UserVO"
+            $ref: "#/components/schemas/RoleVO"
+        page:
+          type: integer
+          format: int32
+          description: 当前页号
+        size:
+          type: integer
+          format: int32
+          description: 每页大小
+        totalElements:
+          type: integer
+          format: int64
+          description: 总条数
+        totalPages:
+          type: integer
+          format: int32
+          description: 总页数
+      required:
+      - content
+      - page
+      - size
+      - totalElements
+      - totalPages
+    PageResponsePermissionVO:
+      type: object
+      properties:
+        content:
+          type: array
+          description: 当前页数据列表
+          items:
+            $ref: "#/components/schemas/PermissionVO"
         page:
           type: integer
           format: int32
