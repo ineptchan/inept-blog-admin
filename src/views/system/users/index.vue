@@ -12,7 +12,7 @@ const userListQuery = ref<PageQueryRequest>({
   pageSize: 20
 })
 
-const userListQueryResult = ref<PageQueryResponse<UserType>>({
+const userListQueryResult = ref<PageQueryResponse<UserRoleType>>({
   content: [],
   page: 1,
   size: 0,
@@ -37,7 +37,7 @@ const fetchUserList = async () => {
   isUserListLoading.value = false
 }
 
-const handleBeforeStatusChange = async (user: UserType) => {
+const handleBeforeStatusChange = async (user: UserRoleType) => {
   await userApi.updateUserStatus(user.id, !user.status)
   fetchUserList()
 }
@@ -65,6 +65,24 @@ onMounted(() => {
       <el-table-column prop="nickname" label="用户昵称" width="150"/>
       <el-table-column prop="username" label="用户名" width="150"/>
       <el-table-column prop="email" label="邮箱" min-width="200"/>
+      <el-table-column label="角色" min-width="220">
+        <template #default="{ row }">
+          <div class="flex flex-wrap gap-1">
+            <el-tag
+                v-for="role in row.roles"
+                :key="role.id"
+                effect="light"
+                size="small"
+                type="primary"
+            >
+              {{ role.name }}
+            </el-tag>
+            <span v-if="!row.roles || row.roles.length === 0" class="text-gray-400">
+        暂无角色
+      </span>
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column prop="status" label="状态" width="100" align="center">
         <template #default="{ row }">
           <el-switch v-model="row.status" :before-change="() => handleBeforeStatusChange(row)"/>
