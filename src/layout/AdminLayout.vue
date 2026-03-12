@@ -2,7 +2,7 @@
   <!-- 外层容器：占满全屏高度，Flex 布局 -->
   <div class="flex h-screen bg-gray-50 overflow-hidden">
     <!-- 左侧侧边栏 -->
-    <aside class="w-64 bg-white shadow-md flex flex-col transition-all duration-300">
+    <aside class="w-64  shadow-md flex flex-col transition-all duration-300">
       <!-- Logo 区域 -->
       <div class="h-16 flex items-center justify-center border-b border-gray-100">
         <span class="text-xl font-bold text-indigo-600 tracking-wider">ADMIN PANEL</span>
@@ -47,7 +47,7 @@
     <!-- 右侧主体区 -->
     <div class="flex-1 flex flex-col min-w-0">
       <!-- 顶部 Header -->
-      <header class="h-16 bg-white shadow-sm flex items-center justify-between px-6 z-10">
+      <header class="h-16  shadow-sm flex items-center justify-between px-6 z-10">
         <!-- 面包屑 -->
         <div>
           <el-breadcrumb separator="/">

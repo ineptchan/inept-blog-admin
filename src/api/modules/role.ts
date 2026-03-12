@@ -47,5 +47,25 @@ export const roleApi = {
                 id: id
             }
         }
+    })),
+
+    removePermission: (roleId: number, permId: number) => request(() => client.POST('/admin/role/{roleId}/permissions/{permId}', {
+        params: {
+            path: {
+                roleId: roleId,
+                permId: permId
+            }
+        }
+    })),
+
+    addPermission: (roleId: number, permIds: number[]) => request(() => client.POST('/admin/role/{id}/permissions', {
+        params: {
+            path: {
+                id: roleId,
+            }
+        },
+        body: {
+            permissions: permIds
+        }
     }))
 }

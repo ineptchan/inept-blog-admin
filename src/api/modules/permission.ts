@@ -2,7 +2,7 @@ import {request} from "@/api/request.ts"
 import {client} from "@/api/client.ts"
 
 export const permissionApi = {
-    getPermissions: (q: PageQueryRequest) => request(() => client.GET('/permission', {
+    getPermissions: (q: PageQueryRequest) => request(() => client.GET('/admin/permission', {
         params: {
             query: {
                 keyword: q.keyword,

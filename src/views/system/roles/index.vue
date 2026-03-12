@@ -5,13 +5,19 @@ import {roleApi} from "@/api/modules/role.ts"
 import {Plus} from "@element-plus/icons-vue"
 import CreateRoleForm from "@/components/role/CreateRoleForm.vue"
 import EditRoleForm from "@/components/role/EditRoleForm.vue"
+import RolePermissionTable from "@/components/role/RolePermissionTable.vue"
 
 const isRoleListLoading = ref(false)
-const isRolePermissionListLoading = ref(false)
 const isRolePermissionDialogVisible = ref(false)
 const isCreateRoleDialogVisible = ref(false)
 const isEditRoleDialogVisible = ref(false)
 const editRoleId = ref(0)
+const rolePermissionTableRoleId = ref(0)
+
+const onOpenRolePermissionDialog = (row: number) => {
+  isRolePermissionDialogVisible.value = true
+  rolePermissionTableRoleId.value = row
+}
 
 const onEditRole = (role: RoleType) => {
   editRoleId.value = role.id
@@ -28,8 +34,6 @@ const onCreateRoleSuccess = () => {
   isCreateRoleDialogVisible.value = false
   fetchRoleList()
 }
-
-const rolePermissionList = ref<RoleType[]>([])
 
 const roleListQuery = ref<PageQueryRequest>({
   keyword: "",
@@ -60,18 +64,6 @@ const fetchRoleList = async () => {
   }
 
   isRoleListLoading.value = false
-}
-
-const fetchRolePermissions = async (roleId: number) => {
-  isRolePermissionDialogVisible.value = true
-  isRolePermissionListLoading.value = true
-
-  const res = await roleApi.getRolePermissions(roleId)
-  if (res.ok) {
-    rolePermissionList.value = res.data
-  }
-
-  isRolePermissionListLoading.value = false
 }
 
 onMounted(() => {
@@ -110,7 +102,7 @@ onMounted(() => {
                 link
                 size="small"
                 type="primary"
-                @click="fetchRolePermissions(row.id)"
+                @click="onOpenRolePermissionDialog(row.id)"
             >
               权限
             </el-button>
@@ -132,20 +124,9 @@ onMounted(() => {
     <el-dialog
         v-model="isRolePermissionDialogVisible"
         title="绑定的权限"
-        width="960"
+        width="1260"
     >
-      <el-table
-          :data="rolePermissionList"
-          border
-          stripe
-          class="w-full"
-          v-loading="isRolePermissionListLoading"
-      >
-        <el-table-column align="center" label="id" prop="id" width="60"/>
-        <el-table-column label="标识符" prop="code" width="350"/>
-        <el-table-column label="名字" prop="name" width="250"/>
-        <el-table-column label="描述" min-width="300" prop="description"/>
-      </el-table>
+      <RolePermissionTable :id="rolePermissionTableRoleId"/>
     </el-dialog>
     <el-dialog
         v-model="isCreateRoleDialogVisible"

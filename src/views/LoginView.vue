@@ -5,7 +5,7 @@
     <div class="mx-auto flex min-h-screen max-w-6xl items-center justify-center px-4">
       <el-card
           shadow="never"
-          class="w-full max-w-md rounded-2xl border-0 bg-white/90 backdrop-blur ring-1 ring-black/5
+          class="w-full max-w-md rounded-2xl border-0  backdrop-blur ring-1 ring-black/5
                dark:bg-slate-950/70 dark:ring-white/10"
           body-class="p-8"
       >

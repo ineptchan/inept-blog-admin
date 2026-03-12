@@ -1,4 +1,23 @@
 export interface paths {
+    "/admin/role/{id}/permissions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 获取角色绑定的权限 */
+        get: operations["getRoleBindPermissions"];
+        /** 全量替换角色绑定的权限 */
+        put: operations["replaceRolePermissions"];
+        /** 增量添加角色绑定的权限 */
+        post: operations["addRolePermissions"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/articles/{id}/video": {
         parameters: {
             query?: never;
@@ -200,6 +219,23 @@ export interface paths {
         put?: never;
         /** 创建角色 */
         post: operations["createRole"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/role/{roleId}/permissions/{permId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** 移除单个角色绑定的权限 */
+        post: operations["removeRolePermission"];
         delete?: never;
         options?: never;
         head?: never;
@@ -478,23 +514,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/admin/role/{id}/permissions": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** 获取角色绑定的权限 */
-        get: operations["getRoleBindPermissions"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/admin/permission": {
         parameters: {
             query?: never;
@@ -550,6 +569,38 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        ReplaceRolePermissionsDTO: {
+            /** @description 角色绑定的权限列表 */
+            permissions: number[];
+        };
+        PermissionVO: {
+            /**
+             * Format: int64
+             * @description 权限id
+             */
+            id: number;
+            /** @description 权限标识符 */
+            code: string;
+            /** @description 权限名字 */
+            name: string;
+            /** @description 权限描述 */
+            description?: string;
+        };
+        RolePermissionVO: {
+            /**
+             * Format: int64
+             * @description 角色id
+             */
+            id: number;
+            /** @description 角色标识符 */
+            code: string;
+            /** @description 角色名字 */
+            name: string;
+            /** @description 角色描述 */
+            description?: string;
+            /** @description 角色绑定的权限 */
+            permissions: components["schemas"]["PermissionVO"][];
+        };
         UploadArticleVideoDTO: {
             /**
              * Format: binary
@@ -735,6 +786,10 @@ export interface components {
             /** @description 角色描述 */
             description?: string;
         };
+        AddRolePermissionsDTO: {
+            /** @description 角色绑定的权限列表 */
+            permissions: number[];
+        };
         CreateCategoriesDTO: {
             /** @description 分类名字 */
             name: string;
@@ -845,19 +900,6 @@ export interface components {
         UpdatePermissionDTO: {
             /** @description 权限名字 */
             name?: string;
-            /** @description 权限描述 */
-            description?: string;
-        };
-        PermissionVO: {
-            /**
-             * Format: int64
-             * @description 权限id
-             */
-            id: number;
-            /** @description 权限标识符 */
-            code: string;
-            /** @description 权限名字 */
-            name: string;
             /** @description 权限描述 */
             description?: string;
         };
@@ -1231,6 +1273,80 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    getRoleBindPermissions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["RolePermissionVO"];
+                };
+            };
+        };
+    };
+    replaceRolePermissions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReplaceRolePermissionsDTO"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["RolePermissionVO"];
+                };
+            };
+        };
+    };
+    addRolePermissions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AddRolePermissionsDTO"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["RolePermissionVO"];
+                };
+            };
+        };
+    };
     uploadVideo: {
         parameters: {
             query: {
@@ -1591,6 +1707,29 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["RoleVO"];
+                };
+            };
+        };
+    };
+    removeRolePermission: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                roleId: number;
+                permId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["RolePermissionVO"];
                 };
             };
         };
@@ -2361,28 +2500,6 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["PageResponseHomeArticleVO"];
-                };
-            };
-        };
-    };
-    getRoleBindPermissions: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["PermissionVO"][];
                 };
             };
         };
