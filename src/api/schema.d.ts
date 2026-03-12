@@ -1142,9 +1142,9 @@ export interface components {
              */
             totalPages: number;
         };
-        PageResponseUserVO: {
+        PageResponseUserRolesVO: {
             /** @description 当前页数据列表 */
-            content: components["schemas"]["UserVO"][];
+            content: components["schemas"]["UserRolesVO"][];
             /**
              * Format: int32
              * @description 当前页号
@@ -1165,6 +1165,23 @@ export interface components {
              * @description 总页数
              */
             totalPages: number;
+        };
+        UserRolesVO: {
+            /**
+             * Format: int64
+             * @description 用户id
+             */
+            id: number;
+            /** @description 昵称 */
+            nickname: string;
+            /** @description 用户名 */
+            username: string;
+            /** @description 邮箱 */
+            email?: string;
+            /** @description 状态 */
+            status: boolean;
+            /** @description 角色列表 */
+            roles: components["schemas"]["RoleVO"][];
         };
         PageResponseRoleVO: {
             /** @description 当前页数据列表 */
@@ -1580,7 +1597,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["PageResponseUserVO"];
+                    "*/*": components["schemas"]["PageResponseUserRolesVO"];
                 };
             };
         };
