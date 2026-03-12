@@ -3,7 +3,7 @@ import {useDark} from '@vueuse/core'
 import {reactive, ref} from "vue"
 import {authApi} from "@/api/modules/auth.ts"
 import {userApi} from "@/api/modules/user.ts"
-import {useUserStore} from "@/stores/tokenStore.ts"
+import {useUserStore} from "@/stores/userStore.ts"
 import {storeToRefs} from "pinia"
 
 let userStore = useUserStore()

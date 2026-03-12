@@ -51,7 +51,7 @@
 </template>
 <script setup lang="ts">
 import {reactive} from "vue";
-import {useUserStore} from "@/stores/tokenStore.ts"
+import {useUserStore} from "@/stores/userStore.ts"
 import {authApi} from "@/api/modules/auth.ts"
 import {useRouter} from "vue-router"
 
