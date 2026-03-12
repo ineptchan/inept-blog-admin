@@ -9,7 +9,7 @@ const props = defineProps<{
   id: number
 }>()
 
-//获取绑定的权限
+// ===获取绑定的权限===
 const isRolePermissionListLoading = ref(false)
 const rolePermissionList = ref<PermissionType[]>([])
 
@@ -28,7 +28,7 @@ watch(() => props.id, (_) => {
   fetchRolePermissions()
 }, {immediate: true})
 
-//移除权限
+// ===移除权限====
 const removePermission = async (permId: number) => {
   isRolePermissionListLoading.value = true
 
@@ -42,7 +42,7 @@ const removePermission = async (permId: number) => {
   isRolePermissionListLoading.value = false
 }
 
-// 绑定权限
+// ====绑定权限====
 const querySearchPermissionsState = ref('')
 
 const querySearchPermissionsAsync = async (queryString: string, cb: (arg: any) => void) => {
@@ -59,16 +59,25 @@ const handleSelect = (item: PermissionType) => {
 }
 
 const addPermission = async () => {
-  if (currentSelectPermission.value !== null) {
-    const res = await roleApi.addPermission(props.id, [currentSelectPermission.value.id])
-    if (res.ok) {
-      ElNotification.info('添加成功')
-      fetchRolePermissions()
-    } else {
-      showError(res.error)
-    }
-  }
+  const addPermissionData = currentSelectPermission.value
 
+  //未选择
+  if (!addPermissionData) return
+
+  // 如果已经存在就不添加
+  const exists = rolePermissionList.value.some(
+      item => item.id === addPermissionData.id
+  )
+  if (exists) return
+
+  const res = await roleApi.addPermission(props.id, [addPermissionData.id])
+
+  if (res.ok) {
+    ElNotification.info('添加成功')
+    fetchRolePermissions()
+  } else {
+    showError(res.error)
+  }
 }
 </script>
 <template>
