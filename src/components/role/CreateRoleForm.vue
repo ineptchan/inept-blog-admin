@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import {reactive, ref} from "vue"
-import type {FormInstance, FormRules} from "element-plus"
+import {ElNotification, type FormInstance, type FormRules} from "element-plus"
 import {roleApi} from "@/api/modules/role.ts"
 
 const emit = defineEmits(['success'])
@@ -39,6 +39,12 @@ const submit = async () => {
   if (res.ok) {
     formRef.value?.resetFields()
     loading.value = false
+
+    ElNotification.success({
+      title: '创建角色成功',
+      message: res.data.name
+    })
+
     emit('success')
   }
   loading.value = false

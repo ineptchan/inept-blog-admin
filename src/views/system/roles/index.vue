@@ -7,23 +7,15 @@ import CreateRoleForm from "@/components/role/CreateRoleForm.vue"
 import EditRoleForm from "@/components/role/EditRoleForm.vue"
 import RolePermissionTable from "@/components/role/RolePermissionTable.vue"
 import {useRoute, useRouter} from "vue-router"
+import {showError} from "@/util/errorUtil.ts"
+import {ElNotification} from "element-plus"
 
 const route = useRoute()
 const router = useRouter()
 
-const isRoleListLoading = ref(false)
-const isRolePermissionDialogVisible = ref(false)
-const isCreateRoleDialogVisible = ref(false)
+// === 编辑角色 ===
 const isEditRoleDialogVisible = ref(false)
 const editRoleId = ref(0)
-const rolePermissionTableRoleId = ref(0)
-
-// === 角色权限 ===
-
-const onOpenRolePermissionDialog = (row: number) => {
-  isRolePermissionDialogVisible.value = true
-  rolePermissionTableRoleId.value = row
-}
 
 const onEditRole = (role: RoleType) => {
   editRoleId.value = role.id
@@ -35,12 +27,16 @@ const onEditRoleSuccess = () => {
   fetchRoleList()
 }
 
+// === 创建角色 ===
+const isCreateRoleDialogVisible = ref(false)
+
 const onCreateRoleSuccess = () => {
   isCreateRoleDialogVisible.value = false
   fetchRoleList()
 }
 
 // === 表格 ===
+const isRoleListLoading = ref(false)
 
 const roleListQuery = reactive<PageQueryRequest>({
   keyword: String(route.query.keyword ?? ""),
@@ -60,19 +56,19 @@ const fetchRoleList = async () => {
   if (isRoleListLoading.value) return
   isRoleListLoading.value = true
 
-  try {
-    const res = await roleApi.getRoles({
-      keyword: roleListQuery.keyword,
-      page: roleListQuery.page,
-      pageSize: roleListQuery.pageSize,
-    })
+  const res = await roleApi.getRoles({
+    keyword: roleListQuery.keyword,
+    page: roleListQuery.page,
+    pageSize: roleListQuery.pageSize,
+  })
 
-    if (res.ok) {
-      roleListQueryResult.value = res.data
-    }
-  } finally {
-    isRoleListLoading.value = false
+  if (res.ok) {
+    roleListQueryResult.value = res.data
+  } else {
+    showError(res.error)
   }
+
+  isRoleListLoading.value = false
 }
 
 const updateQuery = async (patch: Partial<PageQueryRequest>) => {
@@ -108,6 +104,29 @@ watch(
     },
     {immediate: true}
 )
+
+// === 删除角色 ===
+const onDeleteRole = async (role: RoleType) => {
+  if (isRoleListLoading.value) return
+
+  const res = await roleApi.deleteRole(role.id)
+  if (res.ok) {
+    ElNotification.success({
+      title: '删除角色成功'
+    })
+  } else {
+    showError(res.error)
+  }
+}
+
+// === 角色权限 ===
+const isRolePermissionDialogVisible = ref(false)
+const rolePermissionTableRoleId = ref(0)
+
+const onOpenRolePermissionDialog = (row: number) => {
+  isRolePermissionDialogVisible.value = true
+  rolePermissionTableRoleId.value = row
+}
 </script>
 <template>
   <div>
@@ -146,7 +165,16 @@ watch(
               权限
             </el-button>
             <el-button link size="small" type="primary" @click="onEditRole(row)">编辑</el-button>
-            <el-button disabled link size="small" type="danger">删除</el-button>
+            <el-popconfirm
+                cancel-button-text="取消"
+                confirm-button-text="确认"
+                title="确认删除这个角色吗？"
+                @confirm="onDeleteRole(row)"
+            >
+              <template #reference>
+                <el-button link size="small" type="danger">删除</el-button>
+              </template>
+            </el-popconfirm>
           </template>
         </el-table-column>
       </el-table>

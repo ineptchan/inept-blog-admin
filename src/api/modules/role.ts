@@ -67,5 +67,13 @@ export const roleApi = {
         body: {
             permissions: permIds
         }
+    })),
+
+    deleteRole: (id: number) => request(() => client.DELETE('/admin/role/{id}', {
+        params: {
+            path: {
+                id: id
+            }
+        }
     }))
 }
