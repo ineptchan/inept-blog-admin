@@ -6,6 +6,61 @@ servers:
 - url: http://127.0.0.1:8080
   description: Generated server url
 paths:
+  /admin/user/{id}/roles:
+    put:
+      tags:
+      - 用户接口
+      summary: 全量替换用户绑定的角色
+      operationId: replaceUserRoles
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReplaceUserRolesDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserRolesVO"
+      security:
+      - accessToken: []
+    post:
+      tags:
+      - 用户接口
+      summary: 增量替换用户绑定的角色
+      operationId: addUserRoles
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddUserRolesDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserRolesVO"
+      security:
+      - accessToken: []
   /admin/role/{id}/permissions:
     get:
       tags:
@@ -716,7 +771,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/UserInfoVO"
+                $ref: "#/components/schemas/UserDetailVO"
       security:
       - accessToken: []
     patch:
@@ -758,7 +813,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/UserInfoVO"
+                $ref: "#/components/schemas/UserDetailVO"
       security:
       - accessToken: []
     delete:
@@ -1459,8 +1514,97 @@ paths:
                 $ref: "#/components/schemas/PageResponseCommentReplyVO"
       security:
       - accessToken: []
+  /admin/user/{userId}/roles/{roleId}:
+    delete:
+      tags:
+      - 用户接口
+      summary: 移除单个用户绑定的角色
+      operationId: removeUserRole
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: roleId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserRolesVO"
+      security:
+      - accessToken: []
 components:
   schemas:
+    ReplaceUserRolesDTO:
+      type: object
+      properties:
+        roles:
+          type: array
+          description: 角色列表
+          items:
+            type: integer
+            format: int64
+      required:
+      - roles
+    RoleVO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: 角色id
+        code:
+          type: string
+          description: 角色标识符
+        name:
+          type: string
+          description: 角色名字
+        description:
+          type: string
+          description: 角色描述
+      required:
+      - code
+      - id
+      - name
+    UserRolesVO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: 用户id
+        nickname:
+          type: string
+          description: 昵称
+        username:
+          type: string
+          description: 用户名
+        email:
+          type: string
+          description: 邮箱
+        status:
+          type: boolean
+          description: 状态
+        roles:
+          type: array
+          description: 角色列表
+          items:
+            $ref: "#/components/schemas/RoleVO"
+      required:
+      - id
+      - nickname
+      - roles
+      - status
+      - username
     ReplaceRolePermissionsDTO:
       type: object
       properties:
@@ -1765,6 +1909,17 @@ components:
       - nickname
       - status
       - username
+    AddUserRolesDTO:
+      type: object
+      properties:
+        roles:
+          type: array
+          description: 角色列表
+          items:
+            type: integer
+            format: int64
+      required:
+      - roles
     CreateTagDTO:
       type: object
       properties:
@@ -1814,26 +1969,6 @@ components:
           description: 角色描述
       required:
       - code
-      - name
-    RoleVO:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-          description: 角色id
-        code:
-          type: string
-          description: 角色标识符
-        name:
-          type: string
-          description: 角色名字
-        description:
-          type: string
-          description: 角色描述
-      required:
-      - code
-      - id
       - name
     AddRolePermissionsDTO:
       type: object
@@ -2104,7 +2239,7 @@ components:
           - DRAFT
           - PUBLISHED
           - ARCHIVED
-    UserInfoVO:
+    UserDetailVO:
       type: object
       properties:
         id:
@@ -2126,6 +2261,11 @@ components:
         status:
           type: boolean
           description: 状态
+        roles:
+          type: array
+          description: 角色列表
+          items:
+            $ref: "#/components/schemas/RoleVO"
         permissionCodes:
           type: array
           description: openapi.permission.permission
@@ -2136,6 +2276,7 @@ components:
       - id
       - nickname
       - permissionCodes
+      - roles
       - status
       - username
     PageResponseTagVO:
@@ -2422,36 +2563,6 @@ components:
       - size
       - totalElements
       - totalPages
-    UserRolesVO:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-          description: 用户id
-        nickname:
-          type: string
-          description: 昵称
-        username:
-          type: string
-          description: 用户名
-        email:
-          type: string
-          description: 邮箱
-        status:
-          type: boolean
-          description: 状态
-        roles:
-          type: array
-          description: 角色列表
-          items:
-            $ref: "#/components/schemas/RoleVO"
-      required:
-      - id
-      - nickname
-      - roles
-      - status
-      - username
     PageResponseRoleVO:
       type: object
       properties:

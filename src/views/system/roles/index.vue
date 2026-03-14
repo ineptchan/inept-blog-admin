@@ -1,11 +1,15 @@
 <script setup lang="ts">
-import {onMounted, ref} from "vue"
+import {reactive, ref, watch} from "vue"
 import PageCard from "@/components/PageCard.vue"
 import {roleApi} from "@/api/modules/role.ts"
 import {Plus} from "@element-plus/icons-vue"
 import CreateRoleForm from "@/components/role/CreateRoleForm.vue"
 import EditRoleForm from "@/components/role/EditRoleForm.vue"
 import RolePermissionTable from "@/components/role/RolePermissionTable.vue"
+import {useRoute, useRouter} from "vue-router"
+
+const route = useRoute()
+const router = useRouter()
 
 const isRoleListLoading = ref(false)
 const isRolePermissionDialogVisible = ref(false)
@@ -13,6 +17,8 @@ const isCreateRoleDialogVisible = ref(false)
 const isEditRoleDialogVisible = ref(false)
 const editRoleId = ref(0)
 const rolePermissionTableRoleId = ref(0)
+
+// === 角色权限 ===
 
 const onOpenRolePermissionDialog = (row: number) => {
   isRolePermissionDialogVisible.value = true
@@ -29,16 +35,17 @@ const onEditRoleSuccess = () => {
   fetchRoleList()
 }
 
-
 const onCreateRoleSuccess = () => {
   isCreateRoleDialogVisible.value = false
   fetchRoleList()
 }
 
-const roleListQuery = ref<PageQueryRequest>({
-  keyword: "",
-  page: 1,
-  pageSize: 20
+// === 表格 ===
+
+const roleListQuery = reactive<PageQueryRequest>({
+  keyword: String(route.query.keyword ?? ""),
+  page: Number(route.query.page ?? 1),
+  pageSize: Number(route.query["page-size"] ?? 20),
 })
 
 const roleListQueryResult = ref<PageQueryResponse<RoleType>>({
@@ -49,26 +56,58 @@ const roleListQueryResult = ref<PageQueryResponse<RoleType>>({
   totalPages: 0
 })
 
-const handlePageChange = (page: number) => {
-  roleListQuery.value.page = page
-  fetchRoleList()
-}
-
 const fetchRoleList = async () => {
   if (isRoleListLoading.value) return
   isRoleListLoading.value = true
 
-  const res = await roleApi.getRoles(roleListQuery.value)
-  if (res.ok) {
-    roleListQueryResult.value = res.data
-  }
+  try {
+    const res = await roleApi.getRoles({
+      keyword: roleListQuery.keyword,
+      page: roleListQuery.page,
+      pageSize: roleListQuery.pageSize,
+    })
 
-  isRoleListLoading.value = false
+    if (res.ok) {
+      roleListQueryResult.value = res.data
+    }
+  } finally {
+    isRoleListLoading.value = false
+  }
 }
 
-onMounted(() => {
-  fetchRoleList()
-})
+const updateQuery = async (patch: Partial<PageQueryRequest>) => {
+  await router.replace({
+    query: {
+      ...route.query,
+      page: patch.page ?? roleListQuery.page,
+      "page-size": patch.pageSize ?? roleListQuery.pageSize,
+      keyword: (patch.keyword ?? roleListQuery.keyword) || undefined,
+    },
+  })
+}
+
+const handlePageChange = async (page: number) => {
+  await updateQuery({page})
+}
+
+const handleSearch = async () => {
+  await updateQuery({
+    page: 1,
+    pageSize: roleListQuery.pageSize,
+    keyword: roleListQuery.keyword,
+  })
+}
+
+watch(
+    () => [route.query.page, route.query["page-size"], route.query.keyword],
+    async ([page, pageSize, keyword]) => {
+      roleListQuery.page = Number(page ?? 1)
+      roleListQuery.pageSize = Number(pageSize ?? 20)
+      roleListQuery.keyword = String(keyword ?? "")
+      await fetchRoleList()
+    },
+    {immediate: true}
+)
 </script>
 <template>
   <div>
@@ -81,7 +120,7 @@ onMounted(() => {
               class="w-64"
               clearable
           />
-          <el-button type="primary" plain @click="fetchRoleList">搜索</el-button>
+          <el-button plain type="primary" @click="handleSearch">搜索</el-button>
         </div>
         <el-button :icon="Plus" type="primary" @click="isCreateRoleDialogVisible = true">创建角色</el-button>
       </div>

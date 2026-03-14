@@ -1,4 +1,22 @@
 export interface paths {
+    "/admin/user/{id}/roles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** 全量替换用户绑定的角色 */
+        put: operations["replaceUserRoles"];
+        /** 增量替换用户绑定的角色 */
+        post: operations["addUserRoles"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/role/{id}/permissions": {
         parameters: {
             query?: never;
@@ -565,10 +583,61 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/user/{userId}/roles/{roleId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** 移除单个用户绑定的角色 */
+        delete: operations["removeUserRole"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        ReplaceUserRolesDTO: {
+            /** @description 角色列表 */
+            roles: number[];
+        };
+        RoleVO: {
+            /**
+             * Format: int64
+             * @description 角色id
+             */
+            id: number;
+            /** @description 角色标识符 */
+            code: string;
+            /** @description 角色名字 */
+            name: string;
+            /** @description 角色描述 */
+            description?: string;
+        };
+        UserRolesVO: {
+            /**
+             * Format: int64
+             * @description 用户id
+             */
+            id: number;
+            /** @description 昵称 */
+            nickname: string;
+            /** @description 用户名 */
+            username: string;
+            /** @description 邮箱 */
+            email?: string;
+            /** @description 状态 */
+            status: boolean;
+            /** @description 角色列表 */
+            roles: components["schemas"]["RoleVO"][];
+        };
         ReplaceRolePermissionsDTO: {
             /** @description 角色绑定的权限列表 */
             permissions: number[];
@@ -748,6 +817,10 @@ export interface components {
             /** @description 状态 */
             status: boolean;
         };
+        AddUserRolesDTO: {
+            /** @description 角色列表 */
+            roles: number[];
+        };
         CreateTagDTO: {
             /** @description 标签名字 */
             name: string;
@@ -766,19 +839,6 @@ export interface components {
             slug: string;
         };
         CreateRoleDTO: {
-            /** @description 角色标识符 */
-            code: string;
-            /** @description 角色名字 */
-            name: string;
-            /** @description 角色描述 */
-            description?: string;
-        };
-        RoleVO: {
-            /**
-             * Format: int64
-             * @description 角色id
-             */
-            id: number;
             /** @description 角色标识符 */
             code: string;
             /** @description 角色名字 */
@@ -933,7 +993,7 @@ export interface components {
              */
             articleStatus?: "DRAFT" | "PUBLISHED" | "ARCHIVED";
         };
-        UserInfoVO: {
+        UserDetailVO: {
             /**
              * Format: int64
              * @description 用户id
@@ -949,6 +1009,8 @@ export interface components {
             email?: string;
             /** @description 状态 */
             status: boolean;
+            /** @description 角色列表 */
+            roles: components["schemas"]["RoleVO"][];
             /** @description openapi.permission.permission */
             permissionCodes: string[];
         };
@@ -1166,23 +1228,6 @@ export interface components {
              */
             totalPages: number;
         };
-        UserRolesVO: {
-            /**
-             * Format: int64
-             * @description 用户id
-             */
-            id: number;
-            /** @description 昵称 */
-            nickname: string;
-            /** @description 用户名 */
-            username: string;
-            /** @description 邮箱 */
-            email?: string;
-            /** @description 状态 */
-            status: boolean;
-            /** @description 角色列表 */
-            roles: components["schemas"]["RoleVO"][];
-        };
         PageResponseRoleVO: {
             /** @description 当前页数据列表 */
             content: components["schemas"]["RoleVO"][];
@@ -1290,6 +1335,58 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    replaceUserRoles: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReplaceUserRolesDTO"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["UserRolesVO"];
+                };
+            };
+        };
+    };
+    addUserRoles: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AddUserRolesDTO"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["UserRolesVO"];
+                };
+            };
+        };
+    };
     getRoleBindPermissions: {
         parameters: {
             query?: never;
@@ -1960,7 +2057,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["UserInfoVO"];
+                    "*/*": components["schemas"]["UserDetailVO"];
                 };
             };
         };
@@ -2004,7 +2101,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["UserInfoVO"];
+                    "*/*": components["schemas"]["UserDetailVO"];
                 };
             };
         };
@@ -2595,6 +2692,29 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["PageResponseCommentReplyVO"];
+                };
+            };
+        };
+    };
+    removeUserRole: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                userId: number;
+                roleId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["UserRolesVO"];
                 };
             };
         };
