@@ -5,6 +5,8 @@ import {authApi} from "@/api/modules/auth.ts"
 import {userApi} from "@/api/modules/user.ts"
 import {useUserStore} from "@/stores/userStore.ts"
 import {storeToRefs} from "pinia"
+import CreateUserForm from "@/components/user/CreateUserForm.vue"
+import RoleSelect from "@/components/role/RoleSelect.vue"
 
 let userStore = useUserStore()
 const isDark = useDark()
@@ -84,7 +86,7 @@ const page = ref({
 })
 
 const getUsers = async () => {
-  const res = await userApi.getUsers(undefined, page.value.page, page.value.size)
+  const res = await userApi.getUsers({keyword: '', page: 1, pageSize: 20})
   if (res.ok) {
     users.value = res.data.content
     page.value.total = res.data.totalElements
@@ -92,7 +94,7 @@ const getUsers = async () => {
 }
 </script>
 <template>
-  <div>
+  <div class="flex flex-col gap-4">
     <el-card>
       <template #header>Dark</template>
       <template #default>
@@ -147,6 +149,12 @@ const getUsers = async () => {
       <template #default>
         <div>{{ accessToken }}</div>
       </template>
+    </el-card>
+    <el-card>
+      <CreateUserForm></CreateUserForm>
+    </el-card>
+    <el-card>
+      <RoleSelect></RoleSelect>
     </el-card>
   </div>
 </template>

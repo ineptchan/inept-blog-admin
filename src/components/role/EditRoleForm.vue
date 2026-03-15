@@ -1,31 +1,15 @@
 <script lang="ts" setup>
 import {reactive, ref, watch} from "vue"
-import {ElNotification, type FormInstance, type FormRules} from "element-plus"
+import {ElNotification, type FormInstance} from "element-plus"
 import {roleApi} from "@/api/modules/role.ts"
+import {updateRoleRules} from "@/util/formRules.ts"
 
 const props = defineProps<{
   id: number
 }>()
 const emit = defineEmits(['success'])
-
 const formRef = ref<FormInstance>()
-
 const loading = ref(false)
-
-const updateRoleRules: FormRules = {
-  code: [
-    {
-      pattern: /^[A-Za-z]+$/,
-      message: '角色标识符只能包含英文字母',
-      trigger: 'blur',
-    },
-  ],
-  name: [
-    {min: 2, max: 24, message: '角色名字长度为 2~24 个字符', trigger: 'blur'},
-  ],
-  description: [],
-}
-
 const form = reactive({
   code: '',
   name: '',
@@ -60,7 +44,7 @@ const submit = async () => {
 }
 
 const reset = () => {
-  formRef.value?.resetFields()
+  fetchRole()
 }
 
 const fetchRole = async () => {

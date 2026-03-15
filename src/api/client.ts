@@ -12,7 +12,7 @@ export const client = createClient<paths>({
 // 认证头：每次请求都读取最新 token（避免状态不同步）
 const authMiddleware: Middleware = {
     async onRequest({request}) {
-        let token =  useUserStore().accessToken;
+        let token = useUserStore().accessToken;
         if (token) request.headers.set("Authorization", `Bearer ${token}`);
 
         //TODO 等后端接口可返回过期时间，添加个过期时间检查，过期了刷新token
@@ -41,6 +41,8 @@ const unauthorizedMiddleware: Middleware = {
                     console.log('刷新令牌')
                     userStore.saveAccessToken(res.data.accessToken)
                     return undefined;
+                } else {
+                    router.push('/login')
                 }
             }
 
@@ -51,6 +53,8 @@ const unauthorizedMiddleware: Middleware = {
                     console.log('刷新令牌')
                     userStore.saveAccessToken(res.data.accessToken)
                     return undefined;
+                } else {
+                    router.push('/login')
                 }
             }
 

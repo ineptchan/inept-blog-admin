@@ -15,7 +15,7 @@ const router = useRouter()
 
 // === 编辑角色 ===
 const isEditRoleDialogVisible = ref(false)
-const editRoleId = ref(0)
+const editRoleId  = ref(0)
 
 const onEditRole = (role: RoleType) => {
   editRoleId.value = role.id

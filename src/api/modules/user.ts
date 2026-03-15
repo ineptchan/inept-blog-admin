@@ -12,6 +12,7 @@ export const userApi = {
         }
     })),
 
+    //TODO 考虑删除
     updateUserStatus: (id: number, status: boolean) => request(() => client.PATCH('/admin/user/{id}', {
         params: {
             path: {
@@ -20,6 +21,39 @@ export const userApi = {
         },
         body: {
             status: status
+        }
+    })),
+
+    createUser: (req: CreateUserRequest) => request(() => client.POST('/admin/user', {
+        body: {
+            ...req
+        }
+    })),
+
+    updateUser: (id: number, req: UpdateUserRequest) => request(() => client.PATCH('/admin/user/{id}', {
+        params: {
+            path: {
+                id: id
+            }
+        },
+        body: {
+            ...req
+        }
+    })),
+
+    getUserById: (id: number) => request(() => client.GET('/admin/user/{id}', {
+        params: {
+            path: {
+                id: id
+            }
+        }
+    })),
+
+    deleteUser: (id: number) => request(() => client.DELETE('/admin/user/{id}', {
+        params: {
+            path: {
+                id: id
+            }
         }
     }))
 }
