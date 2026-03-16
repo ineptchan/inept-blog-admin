@@ -45,6 +45,7 @@ declare module 'vue' {
     ElTable: typeof import('element-plus/es')['ElTable']
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
     ElTag: typeof import('element-plus/es')['ElTag']
+    IconIcBaselineBattery20: typeof import('~icons/ic/baseline-battery20')['default']
     PageCard: typeof import('./src/components/PageCard.vue')['default']
     PermissionSelect: typeof import('./src/components/permission/PermissionSelect.vue')['default']
     RolePermissionTableDialog: typeof import('./src/components/role/RolePermissionTableDialog.vue')['default']

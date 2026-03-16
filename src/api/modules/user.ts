@@ -2,6 +2,7 @@ import {client} from "@/api/client.ts"
 import {request} from "@/api/request.ts"
 
 export const userApi = {
+    // === admin ===
     getUsers: (q: PageQueryRequest) => request(() => client.GET('/admin/user', {
         params: {
             query: {
@@ -55,5 +56,8 @@ export const userApi = {
                 id: id
             }
         }
-    }))
+    })),
+
+    // === user ===
+    getProfile: () => request(() => client.GET('/user/user'))
 }

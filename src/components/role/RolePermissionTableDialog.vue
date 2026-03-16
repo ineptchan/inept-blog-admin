@@ -12,6 +12,7 @@ const roleId = ref(0)
 const openDialog = (id: number) => {
   isDialogVisible.value = true
   roleId.value = id
+  fetchRolePermissions()
 }
 
 defineExpose({

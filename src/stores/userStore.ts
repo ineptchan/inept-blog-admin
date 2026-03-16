@@ -3,21 +3,15 @@ import {ref} from "vue"
 
 export const useUserStore = defineStore('userStore', () => {
     const accessToken = ref<string | null>(null)
-    const id = ref<number | null>(null)
-    const nickname = ref<string | null>(null)
-    const username = ref<string | null>(null)
-    const email = ref<string | undefined>(undefined)
+    const profile = ref<UserDetailType | null>(null)
 
     const saveAccessToken = (v: string | null) => {
         accessToken.value = v;
     }
 
-    const saveUser = (newValue: { id: number, nickname: string, username: string, email: string | undefined }) => {
-        id.value = newValue.id
-        nickname.value = newValue.nickname
-        username.value = newValue.username
-        email.value = newValue.email
+    const saveProfile = (v: UserDetailType) => {
+        profile.value = v
     }
 
-    return {id, nickname, username, email, accessToken, saveAccessToken, saveUser}
+    return {profile, accessToken, saveAccessToken, saveProfile}
 })

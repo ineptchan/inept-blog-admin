@@ -25,7 +25,7 @@ interface UserDetailType {
     permissionCodes: string[]
 }
 
-//请求
+// === 请求 ===
 interface CreateUserRequest {
     nickname: string,
     username: string,
