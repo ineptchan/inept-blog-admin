@@ -12,7 +12,7 @@ export const userApi = {
         }
     })),
 
-    //TODO 考虑删除
+    //TODO 考虑删除，用updateUser替代
     updateUserStatus: (id: number, status: boolean) => request(() => client.PATCH('/admin/user/{id}', {
         params: {
             path: {

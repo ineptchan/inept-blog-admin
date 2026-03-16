@@ -3,35 +3,35 @@ import {reactive, ref, watch} from "vue"
 import PageCard from "@/components/PageCard.vue"
 import {roleApi} from "@/api/modules/role.ts"
 import {Plus} from "@element-plus/icons-vue"
-import CreateRoleForm from "@/components/role/CreateRoleForm.vue"
-import EditRoleForm from "@/components/role/EditRoleForm.vue"
-import RolePermissionTable from "@/components/role/RolePermissionTable.vue"
 import {useRoute, useRouter} from "vue-router"
 import {showError} from "@/util/errorUtil.ts"
 import {ElNotification} from "element-plus"
+import CreateRoleDialog from "@/components/role/CreateRoleDialog.vue"
+import EditRoleDialog from "@/components/role/EditRoleDialog.vue"
+import RolePermissionTableDialog from "@/components/role/RolePermissionTableDialog.vue"
 
 const route = useRoute()
 const router = useRouter()
 
 // === 编辑角色 ===
-const isEditRoleDialogVisible = ref(false)
-const editRoleId  = ref(0)
+const editRoleDialogRef = ref<InstanceType<typeof EditRoleDialog> | null>(null)
 
 const onEditRole = (role: RoleType) => {
-  editRoleId.value = role.id
-  isEditRoleDialogVisible.value = true
+  editRoleDialogRef.value?.openDialog(role.id)
 }
 
 const onEditRoleSuccess = () => {
-  isEditRoleDialogVisible.value = false
   fetchRoleList()
 }
 
 // === 创建角色 ===
-const isCreateRoleDialogVisible = ref(false)
+const createRoleDialogRef = ref<InstanceType<typeof CreateRoleDialog> | null>(null)
+
+const onCreateRole = () => {
+  createRoleDialogRef.value?.openDialog()
+}
 
 const onCreateRoleSuccess = () => {
-  isCreateRoleDialogVisible.value = false
   fetchRoleList()
 }
 
@@ -120,12 +120,10 @@ const onDeleteRole = async (role: RoleType) => {
 }
 
 // === 角色权限 ===
-const isRolePermissionDialogVisible = ref(false)
-const rolePermissionTableRoleId = ref(0)
+const rolePermissionTableDialogRef = ref<InstanceType<typeof RolePermissionTableDialog> | null>(null)
 
-const onOpenRolePermissionDialog = (row: number) => {
-  isRolePermissionDialogVisible.value = true
-  rolePermissionTableRoleId.value = row
+const onOpenRolePermissionDialog = (row: RoleType) => {
+  rolePermissionTableDialogRef.value?.openDialog(row.id)
 }
 </script>
 <template>
@@ -141,7 +139,7 @@ const onOpenRolePermissionDialog = (row: number) => {
           />
           <el-button plain type="primary" @click="handleSearch">搜索</el-button>
         </div>
-        <el-button :icon="Plus" type="primary" @click="isCreateRoleDialogVisible = true">创建角色</el-button>
+        <el-button :icon="Plus" type="primary" @click="onCreateRole">创建角色</el-button>
       </div>
       <el-table
           v-loading="isRoleListLoading"
@@ -160,7 +158,7 @@ const onOpenRolePermissionDialog = (row: number) => {
                 link
                 size="small"
                 type="primary"
-                @click="onOpenRolePermissionDialog(row.id)"
+                @click="onOpenRolePermissionDialog(row)"
             >
               权限
             </el-button>
@@ -188,26 +186,8 @@ const onOpenRolePermissionDialog = (row: number) => {
         />
       </div>
     </PageCard>
-    <el-dialog
-        v-model="isRolePermissionDialogVisible"
-        title="绑定的权限"
-        width="1260"
-    >
-      <RolePermissionTable :id="rolePermissionTableRoleId"/>
-    </el-dialog>
-    <el-dialog
-        v-model="isCreateRoleDialogVisible"
-        title="创建角色"
-        width="380"
-    >
-      <CreateRoleForm @success="onCreateRoleSuccess"/>
-    </el-dialog>
-    <el-dialog
-        v-model="isEditRoleDialogVisible"
-        title="编辑角色"
-        width="380"
-    >
-      <EditRoleForm :id="editRoleId" @success="onEditRoleSuccess"/>
-    </el-dialog>
+    <RolePermissionTableDialog ref="rolePermissionTableDialogRef"/>
+    <CreateRoleDialog ref="createRoleDialogRef" @success="onCreateRoleSuccess"/>
+    <EditRoleDialog ref="editRoleDialogRef" @success="onEditRoleSuccess"/>
   </div>
 </template>

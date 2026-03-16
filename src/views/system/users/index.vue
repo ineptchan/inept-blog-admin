@@ -3,8 +3,8 @@ import {onMounted, ref} from "vue"
 import {Plus} from "@element-plus/icons-vue"
 import {userApi} from "@/api/modules/user.ts"
 import PageCard from "@/components/PageCard.vue"
-import CreateUserForm from "@/components/user/CreateUserForm.vue"
-import EditUserForm from "@/components/user/EditUserForm.vue"
+import CreateUserDialog from "@/components/user/CreateUserDialog.vue"
+import EditUserDialog from "@/components/user/EditUserDialog.vue"
 import {showError} from "@/util/errorUtil.ts"
 import {ElNotification} from "element-plus"
 
@@ -48,29 +48,38 @@ onMounted(() => {
 
 // === 更新用户 ===
 const onStatusChange = async (user: UserRoleType) => {
-  await userApi.updateUserStatus(user.id, !user.status)
-  fetchUserList()
+  const res = await userApi.updateUser(user.id, {
+    status: !user.status
+  })
+
+  if (res.ok) {
+    fetchUserList()
+    return true
+  }
+
+  showError(res.error)
+  return false
 }
 
 // === 创建用户 ===
-const isCreateUserDialogVisible = ref(false)
+const createUserDialogRef = ref<InstanceType<typeof CreateUserDialog> | null>(null)
+
+const onCreateUser = () => {
+  createUserDialogRef.value?.openDialog()
+}
 
 const onCreateUserSuccess = () => {
-  isCreateUserDialogVisible.value = false
   fetchUserList()
 }
 
 // === 编辑用户 ===
-const isEditUserDialogVisible = ref(false)
-const editUserId = ref(0)
+const editUserDialogRef = ref<InstanceType<typeof EditUserDialog> | null>(null)
 
 const onEditUser = (user: UserRoleType) => {
-  editUserId.value = user.id
-  isEditUserDialogVisible.value = true
+  editUserDialogRef.value?.openDialog(user.id)
 }
 
 const onEditUserSuccess = () => {
-  isEditUserDialogVisible.value = false
   fetchUserList()
 }
 
@@ -101,7 +110,7 @@ const onDeleteUser = async (user: UserRoleType) => {
           />
           <el-button plain type="primary" @click="fetchUserList">搜索</el-button>
         </div>
-        <el-button :icon="Plus" type="primary" @click="isCreateUserDialogVisible=true">新增用户</el-button>
+        <el-button :icon="Plus" type="primary" @click="onCreateUser">新增用户</el-button>
       </div>
       <el-table v-loading="isUserListLoading" :data="userListQueryResult.content" border class="w-full" stripe>
         <el-table-column align="center" label="id" prop="id" width="60"/>
@@ -148,19 +157,7 @@ const onDeleteUser = async (user: UserRoleType) => {
         />
       </div>
     </PageCard>
-    <el-dialog
-        v-model="isCreateUserDialogVisible"
-        title="创建用户"
-        width="380"
-    >
-      <CreateUserForm @success="onCreateUserSuccess"/>
-    </el-dialog>
-    <el-dialog
-        v-model="isEditUserDialogVisible"
-        title="编辑用户"
-        width="520"
-    >
-      <EditUserForm :id="editUserId" @success="onEditUserSuccess"/>
-    </el-dialog>
+    <CreateUserDialog ref="createUserDialogRef" @success="onCreateUserSuccess"/>
+    <EditUserDialog ref="editUserDialogRef" @success="onEditUserSuccess"/>
   </div>
 </template>

@@ -1,29 +1,14 @@
 <script lang="ts" setup>
 import {reactive, ref} from "vue"
-import {ElNotification, type FormInstance, type FormRules} from "element-plus"
+import {ElNotification, type FormInstance} from "element-plus"
 import {roleApi} from "@/api/modules/role.ts"
+import {createRoleRules} from "@/util/formRules.ts"
 
 const emit = defineEmits(['success'])
 
 const loading = ref(false)
 
 const formRef = ref<FormInstance>()
-
-const createRoleRules: FormRules = {
-  code: [
-    {required: true, message: '角色标识符不能为空', trigger: 'blur'},
-    {
-      pattern: /^[A-Za-z]+$/,
-      message: '角色标识符只能包含英文字母',
-      trigger: 'blur',
-    },
-  ],
-  name: [
-    {required: true, message: '角色名字不能为空', trigger: 'blur'},
-    {min: 2, max: 24, message: '角色名字长度为 2~24 个字符', trigger: 'blur'},
-  ],
-  description: [],
-}
 
 const form = reactive({
   code: '',
