@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, ref} from "vue"
+import {reactive, ref, watch} from "vue"
 import {Plus} from "@element-plus/icons-vue"
 import {userApi} from "@/api/modules/user.ts"
 import PageCard from "@/components/PageCard.vue"
@@ -7,14 +7,18 @@ import CreateUserDialog from "@/components/user/CreateUserDialog.vue"
 import EditUserDialog from "@/components/user/EditUserDialog.vue"
 import {showError} from "@/util/errorUtil.ts"
 import {ElNotification} from "element-plus"
+import {useRoute, useRouter} from "vue-router"
+
+const route = useRoute()
+const router = useRouter()
 
 // === 表格 ===
 const isUserListLoading = ref(false)
 
-const userListQuery = ref<PageQueryRequest>({
-  keyword: '',
-  page: 1,
-  pageSize: 20
+const userListQuery = reactive<PageQueryRequest>({
+  keyword: String(route.query.keyword ?? ""),
+  page: Number(route.query.page ?? 1),
+  pageSize: Number(route.query["page-size"] ?? 20),
 })
 
 const userListQueryResult = ref<PageQueryResponse<UserRoleType>>({
@@ -25,26 +29,57 @@ const userListQueryResult = ref<PageQueryResponse<UserRoleType>>({
   totalPages: 0
 })
 
-const handlePageChange = (page: number) => {
-  userListQuery.value.page = page
-  fetchUserList()
+const handlePageChange = async (page: number) => {
+  await updateQuery({page})
 }
 
 const fetchUserList = async () => {
   if (isUserListLoading.value) return
   isUserListLoading.value = true
 
-  const res = await userApi.getUsers(userListQuery.value)
+  const res = await userApi.getUsers({
+    keyword: userListQuery.keyword,
+    page: userListQuery.page,
+    pageSize: userListQuery.pageSize,
+  })
   if (res.ok) {
     userListQueryResult.value = res.data
+  } else {
+    showError(res.error)
   }
 
   isUserListLoading.value = false
 }
 
-onMounted(() => {
-  fetchUserList()
-})
+const updateQuery = async (patch: Partial<PageQueryRequest>) => {
+  await router.replace({
+    query: {
+      ...route.query,
+      page: patch.page ?? userListQuery.page,
+      "page-size": patch.pageSize ?? userListQuery.pageSize,
+      keyword: (patch.keyword ?? userListQuery.keyword) || undefined,
+    },
+  })
+}
+
+const handleSearch = async () => {
+  await updateQuery({
+    page: 1,
+    pageSize: userListQuery.pageSize,
+    keyword: userListQuery.keyword,
+  })
+}
+
+watch(
+    () => [route.query.page, route.query["page-size"], route.query.keyword],
+    async ([page, pageSize, keyword]) => {
+      userListQuery.page = Number(page ?? 1)
+      userListQuery.pageSize = Number(pageSize ?? 20)
+      userListQuery.keyword = String(keyword ?? "")
+      await fetchUserList()
+    },
+    {immediate: true}
+)
 
 // === 更新用户 ===
 const onStatusChange = async (user: UserRoleType) => {
@@ -108,7 +143,7 @@ const onDeleteUser = async (user: UserRoleType) => {
               clearable
               placeholder="搜索昵称/用户名/邮箱..."
           />
-          <el-button plain type="primary" @click="fetchUserList">搜索</el-button>
+          <el-button plain type="primary" @click="handleSearch">搜索</el-button>
         </div>
         <el-button :icon="Plus" type="primary" @click="onCreateUser">新增用户</el-button>
       </div>
