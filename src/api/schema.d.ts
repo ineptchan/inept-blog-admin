@@ -1300,32 +1300,6 @@ export interface components {
              */
             totalPages: number;
         };
-        QueryArticleDTO: {
-            /**
-             * Format: int64
-             * @description 文章分类
-             */
-            category?: number;
-            /** @description 文章关键词(文章标题,文章URL标识,文章内容) */
-            keyword?: string;
-            /** @description 文章标签 */
-            tagIds?: number[];
-            /**
-             * @description 文章状态
-             * @enum {string}
-             */
-            articleStatus?: "DRAFT" | "PUBLISHED" | "ARCHIVED";
-            /**
-             * Format: int32
-             * @description 页数
-             */
-            page: number;
-            /**
-             * Format: int32
-             * @description 大小
-             */
-            size: number;
-        };
     };
     responses: never;
     parameters: never;
@@ -1998,8 +1972,19 @@ export interface operations {
     };
     getArticles: {
         parameters: {
-            query: {
-                dto: components["schemas"]["QueryArticleDTO"];
+            query?: {
+                /** @description 文章分类 */
+                category?: number;
+                /** @description 文章关键词(文章标题,文章URL标识,文章内容) */
+                keyword?: string;
+                /** @description 文章标签 */
+                tagIds?: number[];
+                /** @description 文章状态 */
+                articleStatus?: "DRAFT" | "PUBLISHED" | "ARCHIVED";
+                /** @description 页数 */
+                page?: number;
+                /** @description 大小 */
+                size?: number;
             };
             header?: never;
             path?: never;

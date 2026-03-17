@@ -10,9 +10,9 @@ const openDialog = () => {
   isDialogVisible.value = true
 }
 
-const onSuccess = () => {
+const onSuccess = (category: CategoryType) => {
   isDialogVisible.value = false
-  emit('success')
+  emit('success', category)
 }
 
 defineExpose({

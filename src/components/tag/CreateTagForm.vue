@@ -30,7 +30,7 @@ const submit = async () => {
       message: res.data.name
     })
 
-    emit('success')
+    emit('success', res.data)
   } else {
     showError(res.error)
   }

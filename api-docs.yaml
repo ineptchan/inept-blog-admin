@@ -725,11 +725,62 @@ paths:
       summary: 获取文章列表
       operationId: getArticles
       parameters:
-      - name: dto
+      - name: category
         in: query
-        required: true
+        description: 文章分类
+        required: false
         schema:
-          $ref: "#/components/schemas/QueryArticleDTO"
+          type: integer
+          format: int64
+          description: openapi.article.category
+      - name: keyword
+        in: query
+        description: "文章关键词(文章标题,文章URL标识,文章内容)"
+        required: false
+        schema:
+          type: string
+          description: openapi.article.query_keyword
+      - name: tagIds
+        in: query
+        description: 文章标签
+        required: false
+        schema:
+          type: array
+          description: openapi.article.tags
+          items:
+            type: integer
+            format: int64
+            description: openapi.article.tags
+      - name: articleStatus
+        in: query
+        description: 文章状态
+        required: false
+        schema:
+          type: string
+          description: openapi.article.article_status
+          enum:
+          - DRAFT
+          - PUBLISHED
+          - ARCHIVED
+      - name: page
+        in: query
+        description: 页数
+        required: false
+        schema:
+          type: integer
+          format: int32
+          description: openapi.query.page
+          minimum: 0
+      - name: size
+        in: query
+        description: 大小
+        required: false
+        schema:
+          type: integer
+          format: int32
+          description: openapi.query.size
+          maximum: 9223372036854775807
+          minimum: 0
       responses:
         "200":
           description: OK
@@ -2653,40 +2704,6 @@ components:
       - size
       - totalElements
       - totalPages
-    QueryArticleDTO:
-      type: object
-      properties:
-        category:
-          type: integer
-          format: int64
-          description: 文章分类
-        keyword:
-          type: string
-          description: "文章关键词(文章标题,文章URL标识,文章内容)"
-        tagIds:
-          type: array
-          description: 文章标签
-          items:
-            type: integer
-            format: int64
-        articleStatus:
-          type: string
-          description: 文章状态
-          enum:
-          - DRAFT
-          - PUBLISHED
-          - ARCHIVED
-        page:
-          type: integer
-          format: int32
-          description: 页数
-        size:
-          type: integer
-          format: int32
-          description: 大小
-      required:
-      - page
-      - size
   securitySchemes:
     accessToken:
       type: http

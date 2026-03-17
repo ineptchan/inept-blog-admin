@@ -12,6 +12,8 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     BaseTablePagination: typeof import('./src/components/BaseTablePagination.vue')['default']
+    CreateArticleDialog: typeof import('./src/components/article/CreateArticleDialog.vue')['default']
+    CreateArticleForm: typeof import('./src/components/article/CreateArticleForm.vue')['default']
     CreateCategoryDialog: typeof import('./src/components/category/CreateCategoryDialog.vue')['default']
     CreateCategoryForm: typeof import('./src/components/category/CreateCategoryForm.vue')['default']
     CreateRoleDialog: typeof import('./src/components/role/CreateRoleDialog.vue')['default']
@@ -20,6 +22,7 @@ declare module 'vue' {
     CreateTagForm: typeof import('./src/components/tag/CreateTagForm.vue')['default']
     CreateUserDialog: typeof import('./src/components/user/CreateUserDialog.vue')['default']
     CreateUserForm: typeof import('./src/components/user/CreateUserForm.vue')['default']
+    EditArticleDialog: typeof import('./src/components/article/EditArticleDialog.vue')['default']
     EditCategoryDialog: typeof import('./src/components/category/EditCategoryDialog.vue')['default']
     EditRoleDialog: typeof import('./src/components/role/EditRoleDialog.vue')['default']
     EditTagDialog: typeof import('./src/components/tag/EditTagDialog.vue')['default']

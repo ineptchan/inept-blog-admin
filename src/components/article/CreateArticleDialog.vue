@@ -1,6 +1,6 @@
 ﻿<script lang="ts" setup>
 import {ref} from "vue"
-import CreateTagForm from "@/components/tag/CreateTagForm.vue"
+import CreateArticleForm from "@/components/article/CreateArticleForm.vue"
 
 // === dialog ===
 const emit = defineEmits(['success'])
@@ -10,9 +10,9 @@ const openDialog = () => {
   isDialogVisible.value = true
 }
 
-const onSuccess = (tag: TagType) => {
+const onSuccess = () => {
   isDialogVisible.value = false
-  emit('success', tag)
+  emit('success')
 }
 
 defineExpose({
@@ -22,9 +22,9 @@ defineExpose({
 <template>
   <el-dialog
       v-model="isDialogVisible"
-      title="创建标签"
-      width="380"
+      title="创建文章"
+      width="760"
   >
-    <CreateTagForm @success="onSuccess"/>
+    <CreateArticleForm @success="onSuccess"/>
   </el-dialog>
 </template>
