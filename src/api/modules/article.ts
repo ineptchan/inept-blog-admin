@@ -1,57 +1,105 @@
 ﻿import {client} from "@/api/client.ts"
 import {request} from "@/api/request.ts"
 
-export const articleApi = {
-    getArticles: (q: ArticleQueryRequest) => {
-        const dto = {
-            keyword: q.keyword || undefined,
-            page: q.page - 1,
-            size: q.pageSize,
-            category: q.category,
-            tagIds: q.tagIds && q.tagIds.length > 0 ? q.tagIds : undefined,
-            articleStatus: q.articleStatus,
-        }
+const uploadArticleFile = (
+  id: number,
+  endpoint: "/admin/articles/{id}/image" | "/admin/articles/{id}/featured-image" | "/admin/articles/{id}/video" | "/admin/articles/{id}/attachment",
+  fieldName: "image" | "featuredImage" | "video" | "attachment",
+  file: File,
+) => {
+  const formData = new FormData()
+  formData.append(fieldName, file)
 
-        // OpenAPI 将 QueryArticleDTO 生成为 query.dto，但后端通常按扁平 query 接收。
-        return request(() => client.GET('/admin/articles', {
-            params: {
-                query: {
-                    ...dto,
-                } as any,
-            },
-        }))
+  return request<string>(() => (client.PUT as any)(endpoint, {
+    params: {
+      path: {
+        id,
+      },
     },
+    body: formData,
+    parseAs: "text",
+  }))
+}
 
-    createArticle: (req: CreateArticleRequest) => request(() => client.POST('/admin/articles', {
-        body: {
-            ...req,
-        },
-    })),
+export const articleApi = {
+  getArticles: (q: ArticleQueryRequest) => {
+    const dto = {
+      keyword: q.keyword || undefined,
+      page: q.page - 1,
+      size: q.pageSize,
+      category: q.category,
+      tagIds: q.tagIds && q.tagIds.length > 0 ? q.tagIds : undefined,
+      articleStatus: q.articleStatus,
+    }
 
-    updateArticle: (id: number, req: UpdateArticleRequest) => request(() => client.PATCH('/admin/articles/{id}', {
-        params: {
-            path: {
-                id,
-            },
-        },
-        body: {
-            ...req,
-        },
-    })),
+    // Work around OpenAPI query.dto generation issue by sending flattened query params.
+    return request(() => client.GET("/admin/articles", {
+      params: {
+        query: {
+          ...dto,
+        } as any,
+      },
+    }))
+  },
 
-    getArticleById: (id: number) => request(() => client.GET('/admin/articles/{id}', {
-        params: {
-            path: {
-                id,
-            },
-        },
-    })),
+  createArticle: (req: CreateArticleRequest) => request(() => client.POST("/admin/articles", {
+    body: {
+      ...req,
+    },
+  })),
 
-    deleteArticle: (id: number) => request(() => client.DELETE('/admin/articles/{id}', {
-        params: {
-            path: {
-                id,
-            },
-        },
-    })),
+  updateArticle: (id: number, req: UpdateArticleRequest) => request(() => client.PATCH("/admin/articles/{id}", {
+    params: {
+      path: {
+        id,
+      },
+    },
+    body: {
+      ...req,
+    },
+  })),
+
+  getArticleById: (id: number) => request(() => client.GET("/admin/articles/{id}", {
+    params: {
+      path: {
+        id,
+      },
+    },
+  })),
+
+  deleteArticle: (id: number) => request(() => client.DELETE("/admin/articles/{id}", {
+    params: {
+      path: {
+        id,
+      },
+    },
+  })),
+
+  uploadImage: (id: number, file: File) => uploadArticleFile(
+    id,
+    "/admin/articles/{id}/image",
+    "image",
+    file,
+  ),
+
+  uploadFeaturedImage: (id: number, file: File) => uploadArticleFile(
+    id,
+    "/admin/articles/{id}/featured-image",
+    "featuredImage",
+    file,
+  ),
+
+  uploadVideo: (id: number, file: File) => uploadArticleFile(
+    id,
+    "/admin/articles/{id}/video",
+    "video",
+    file,
+  ),
+
+  uploadAttachment: (id: number, file: File) => uploadArticleFile(
+    id,
+    "/admin/articles/{id}/attachment",
+    "attachment",
+    file,
+  ),
 }

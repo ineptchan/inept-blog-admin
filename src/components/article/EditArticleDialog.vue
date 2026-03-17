@@ -1,11 +1,12 @@
 ﻿<script lang="ts" setup>
 import {reactive, ref} from "vue"
-import {ElNotification, type FormInstance, type FormRules} from "element-plus"
+import {ElNotification, type FormInstance, type FormRules, type UploadRequestOptions} from "element-plus"
 import {articleApi} from "@/api/modules/article.ts"
 import {categoryApi} from "@/api/modules/category.ts"
 import {tagApi} from "@/api/modules/tag.ts"
 import {showError} from "@/util/errorUtil.ts"
 import {createArticleRules, updateArticleRules} from "@/util/formRules.ts"
+import {uploadArticleFeaturedImage} from "@/util/articleUploadUtil.ts"
 import CreateCategoryDialog from "@/components/category/CreateCategoryDialog.vue"
 import CreateTagDialog from "@/components/tag/CreateTagDialog.vue"
 
@@ -104,19 +105,47 @@ const onTagCreated = async (tag: TagType) => {
 // === form ===
 const formRef = ref<FormInstance>()
 const loading = ref(false)
+const featuredImageUploading = ref(false)
+
 const form = reactive<{
   title: string
   slug: string
+  featuredImage: string
   categoryId: number | undefined
   tagIds: number[]
   articleStatus: ArticleStatusType
 }>({
   title: '',
   slug: '',
+  featuredImage: '',
   categoryId: undefined,
   tagIds: [],
   articleStatus: 'DRAFT',
 })
+
+const onUploadFeaturedImage = async (options: UploadRequestOptions) => {
+  if (!editId.value) {
+    options.onError(new Error('文章不存在') as any)
+    return
+  }
+
+  featuredImageUploading.value = true
+
+  try {
+    const uploadedUrl = await uploadArticleFeaturedImage(editId.value, options.file)
+    form.featuredImage = uploadedUrl
+
+    options.onSuccess(uploadedUrl)
+
+    ElNotification.success({
+      title: '封面上传成功',
+    })
+  } catch (error) {
+    options.onError((error instanceof Error ? error : new Error('封面上传失败')) as any)
+  } finally {
+    featuredImageUploading.value = false
+  }
+}
 
 const submit = async () => {
   if (!formRef.value) return
@@ -160,6 +189,7 @@ const fetchArticle = async () => {
   if (res.ok) {
     form.title = res.data.title
     form.slug = res.data.slug
+    form.featuredImage = res.data.featuredImage ?? ''
     form.categoryId = res.data.category.id
     form.tagIds = res.data.tags.map(tag => tag.id)
     form.articleStatus = res.data.articleStatus
@@ -199,6 +229,36 @@ const fetchArticle = async () => {
 
       <el-form-item label="标识" prop="slug">
         <el-input v-model="form.slug" placeholder="请输入文章 URL 标识"/>
+      </el-form-item>
+
+      <el-form-item label="封面">
+        <div class="flex w-full flex-col gap-2">
+          <el-upload
+              :disabled="loading || featuredImageUploading"
+              :http-request="onUploadFeaturedImage"
+              :show-file-list="false"
+              accept="image/*"
+          >
+            <el-button :loading="featuredImageUploading" plain type="primary">
+              {{ form.featuredImage ? '更换封面' : '上传封面' }}
+            </el-button>
+          </el-upload>
+
+          <el-input
+              v-model="form.featuredImage"
+              placeholder="暂无封面地址"
+              readonly
+          />
+
+          <el-image
+              v-if="form.featuredImage"
+              :preview-src-list="[form.featuredImage]"
+              :src="form.featuredImage"
+              class="h-32 w-56 rounded border border-(--el-border-color-light)"
+              fit="cover"
+              preview-teleported
+          />
+        </div>
       </el-form-item>
 
       <el-form-item label="分类" prop="categoryId">

@@ -13,6 +13,7 @@
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.2",
     "@milkdown/crepe": "^7.19.0",
+    "@milkdown/plugin-upload": "7.19.0",
     "@tailwindcss/vite": "^4.2.1",
     "@vueuse/core": "^14.2.1",
     "element-plus": "^2.13.2",
