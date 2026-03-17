@@ -10,8 +10,11 @@ import CreateCategoryDialog from "@/components/category/CreateCategoryDialog.vue
 import CreateTagDialog from "@/components/tag/CreateTagDialog.vue"
 
 const editArticleRules: FormRules = {
-  ...updateArticleRules,
-  ...createArticleRules,
+  title: createArticleRules.title,
+  slug: createArticleRules.slug,
+  categoryId: createArticleRules.categoryId,
+  tagIds: createArticleRules.tagIds,
+  articleStatus: updateArticleRules.articleStatus,
 }
 
 // === dialog ===
@@ -104,14 +107,12 @@ const loading = ref(false)
 const form = reactive<{
   title: string
   slug: string
-  content: string
   categoryId: number | undefined
   tagIds: number[]
   articleStatus: ArticleStatusType
 }>({
   title: '',
   slug: '',
-  content: '',
   categoryId: undefined,
   tagIds: [],
   articleStatus: 'DRAFT',
@@ -126,7 +127,6 @@ const submit = async () => {
   const req: UpdateArticleRequest = {
     title: form.title.trim(),
     slug: form.slug.trim(),
-    content: form.content,
     categoryId: form.categoryId,
     tagIds: form.tagIds,
     articleStatus: form.articleStatus,
@@ -160,7 +160,6 @@ const fetchArticle = async () => {
   if (res.ok) {
     form.title = res.data.title
     form.slug = res.data.slug
-    form.content = res.data.content
     form.categoryId = res.data.category.id
     form.tagIds = res.data.tags.map(tag => tag.id)
     form.articleStatus = res.data.articleStatus
@@ -200,15 +199,6 @@ const fetchArticle = async () => {
 
       <el-form-item label="标识" prop="slug">
         <el-input v-model="form.slug" placeholder="请输入文章 URL 标识"/>
-      </el-form-item>
-
-      <el-form-item label="内容" prop="content">
-        <el-input
-            v-model="form.content"
-            :rows="5"
-            placeholder="请输入文章内容"
-            type="textarea"
-        />
       </el-form-item>
 
       <el-form-item label="分类" prop="categoryId">

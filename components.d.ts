@@ -22,6 +22,7 @@ declare module 'vue' {
     CreateTagForm: typeof import('./src/components/tag/CreateTagForm.vue')['default']
     CreateUserDialog: typeof import('./src/components/user/CreateUserDialog.vue')['default']
     CreateUserForm: typeof import('./src/components/user/CreateUserForm.vue')['default']
+    EditArticleContentDialog: typeof import('./src/components/article/EditArticleContentDialog.vue')['default']
     EditArticleDialog: typeof import('./src/components/article/EditArticleDialog.vue')['default']
     EditCategoryDialog: typeof import('./src/components/category/EditCategoryDialog.vue')['default']
     EditRoleDialog: typeof import('./src/components/role/EditRoleDialog.vue')['default']

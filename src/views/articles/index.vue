@@ -6,6 +6,7 @@ import {categoryApi} from "@/api/modules/category.ts"
 import PageCard from "@/components/PageCard.vue"
 import CreateArticleDialog from "@/components/article/CreateArticleDialog.vue"
 import EditArticleDialog from "@/components/article/EditArticleDialog.vue"
+import EditArticleContentDialog from "@/components/article/EditArticleContentDialog.vue"
 import {showError} from "@/util/errorUtil.ts"
 import {ElNotification} from "element-plus"
 import {useRoute, useRouter} from "vue-router"
@@ -145,7 +146,7 @@ const onCreateArticleSuccess = () => {
   fetchArticleList()
 }
 
-// === 编辑文章 ===
+// === 编辑文章（元数据） ===
 const editArticleDialogRef = ref<InstanceType<typeof EditArticleDialog> | null>(null)
 
 const onEditArticle = (article: HomeArticleType) => {
@@ -153,6 +154,17 @@ const onEditArticle = (article: HomeArticleType) => {
 }
 
 const onEditArticleSuccess = () => {
+  fetchArticleList()
+}
+
+// === 编辑文章内容 ===
+const editArticleContentDialogRef = ref<InstanceType<typeof EditArticleContentDialog> | null>(null)
+
+const onEditArticleContent = (article: HomeArticleType) => {
+  editArticleContentDialogRef.value?.openDialog(article.id)
+}
+
+const onEditArticleContentSuccess = () => {
   fetchArticleList()
 }
 
@@ -274,9 +286,10 @@ const getStatusLabel = (status: ArticleStatusType): string => {
           </template>
         </el-table-column>
         <el-table-column label="内容预览" min-width="220" prop="homeContent" show-overflow-tooltip/>
-        <el-table-column fixed="right" label="操作" width="170">
+        <el-table-column fixed="right" label="操作" width="250">
           <template #default="{ row }">
-            <el-button link size="small" type="primary" @click="onEditArticle(row)">编辑</el-button>
+            <el-button link size="small" type="primary" @click="onEditArticle(row)">编辑信息</el-button>
+            <el-button link size="small" type="primary" @click="onEditArticleContent(row)">编辑内容</el-button>
             <el-popconfirm
                 cancel-button-text="取消"
                 confirm-button-text="确认"
@@ -304,5 +317,6 @@ const getStatusLabel = (status: ArticleStatusType): string => {
 
     <CreateArticleDialog ref="createArticleDialogRef" @success="onCreateArticleSuccess"/>
     <EditArticleDialog ref="editArticleDialogRef" @success="onEditArticleSuccess"/>
+    <EditArticleContentDialog ref="editArticleContentDialogRef" @success="onEditArticleContentSuccess"/>
   </div>
 </template>
