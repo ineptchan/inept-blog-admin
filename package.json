@@ -20,6 +20,7 @@
     "element-plus": "^2.13.2",
     "openapi-fetch": "^0.17.0",
     "pinia": "^3.0.4",
+    "pinyin-pro": "^3.28.0",
     "remark-directive": "^4.0.0",
     "tailwindcss": "^4.2.1",
     "unist-util-visit": "^5.1.0",

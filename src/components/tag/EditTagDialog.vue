@@ -4,6 +4,7 @@ import {ElNotification, type FormInstance} from "element-plus"
 import {updateTagRules} from "@/util/formRules.ts"
 import {tagApi} from "@/api/modules/tag.ts"
 import {showError} from "@/util/errorUtil.ts"
+import {toUrlSlug} from "@/util/slugUtil.ts"
 
 // === dialog ===
 const emit = defineEmits(['success'])
@@ -33,15 +34,21 @@ const form = reactive({
   slug: '',
 })
 
+const onSlugBlur = () => {
+  form.slug = toUrlSlug(form.slug)
+}
+
 const submit = async () => {
   if (!formRef.value) return
+
+  onSlugBlur()
   await formRef.value.validate()
 
   loading.value = true
 
   const req: UpdateTagRequest = {
     name: form.name.trim() || undefined,
-    slug: form.slug.trim() || undefined,
+    slug: form.slug || undefined,
   }
 
   const res = await tagApi.updateTag(editId.value, req)
@@ -96,7 +103,11 @@ const fetchTag = async () => {
         <el-input v-model="form.name" placeholder="请输入标签名称"/>
       </el-form-item>
       <el-form-item label="标识" prop="slug">
-        <el-input v-model="form.slug" placeholder="请输入标签 URL 标识"/>
+        <el-input
+            v-model="form.slug"
+            placeholder="请输入标签 URL 标识"
+            @blur="onSlugBlur"
+        />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submit">更新</el-button>

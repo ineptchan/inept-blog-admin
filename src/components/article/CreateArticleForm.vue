@@ -1,5 +1,5 @@
 ﻿<script lang="ts" setup>
-import {onMounted, reactive, ref} from "vue"
+import {onMounted, reactive, ref, watch} from "vue"
 import {ElNotification, type FormInstance} from "element-plus"
 import {createArticleRules} from "@/util/formRules.ts"
 import {articleApi} from "@/api/modules/article.ts"
@@ -8,6 +8,7 @@ import {tagApi} from "@/api/modules/tag.ts"
 import {showError} from "@/util/errorUtil.ts"
 import CreateCategoryDialog from "@/components/category/CreateCategoryDialog.vue"
 import CreateTagDialog from "@/components/tag/CreateTagDialog.vue"
+import {toUrlSlug} from "@/util/slugUtil.ts"
 
 const emit = defineEmits(['success'])
 
@@ -26,6 +27,23 @@ const form = reactive<{
   content: '',
   categoryId: undefined,
   tagIds: [],
+})
+
+const isSlugManuallyEdited = ref(false)
+
+const onSlugInput = (value: string | number) => {
+  const input = String(value ?? '')
+  isSlugManuallyEdited.value = input.trim().length > 0
+}
+
+const onSlugBlur = () => {
+  form.slug = toUrlSlug(form.slug)
+  isSlugManuallyEdited.value = form.slug.trim().length > 0
+}
+
+watch(() => form.title, (value) => {
+  if (isSlugManuallyEdited.value) return
+  form.slug = toUrlSlug(value)
 })
 
 const categoryLoading = ref(false)
@@ -93,6 +111,8 @@ const onTagCreated = async (tag: TagType) => {
 
 const submit = async () => {
   if (!formRef.value) return
+
+  onSlugBlur()
   await formRef.value.validate()
   loading.value = true
 
@@ -108,6 +128,7 @@ const submit = async () => {
 
   if (res.ok) {
     formRef.value.resetFields()
+    isSlugManuallyEdited.value = false
 
     ElNotification.success({
       title: '创建文章成功',
@@ -124,6 +145,7 @@ const submit = async () => {
 
 const reset = () => {
   formRef.value?.resetFields()
+  isSlugManuallyEdited.value = false
 }
 
 onMounted(async () => {
@@ -143,7 +165,12 @@ onMounted(async () => {
     </el-form-item>
 
     <el-form-item label="标识" prop="slug">
-      <el-input v-model="form.slug" placeholder="请输入文章 URL 标识"/>
+      <el-input
+          v-model="form.slug"
+          placeholder="请输入文章 URL 标识"
+          @blur="onSlugBlur"
+          @input="onSlugInput"
+      />
     </el-form-item>
 
     <el-form-item label="内容" prop="content">
@@ -219,3 +246,4 @@ onMounted(async () => {
   <CreateCategoryDialog ref="createCategoryDialogRef" @success="onCategoryCreated"/>
   <CreateTagDialog ref="createTagDialogRef" @success="onTagCreated"/>
 </template>
+

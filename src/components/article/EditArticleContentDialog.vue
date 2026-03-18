@@ -487,7 +487,7 @@ const defaultVideoHtmlSnippet =
 
 const displayVideoHtmlSnippet = computed(() => {
   return videoHtmlSnippet.value || defaultVideoHtmlSnippet
-})
+})  
 </script>
 <template>
   <el-dialog

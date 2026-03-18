@@ -9,6 +9,7 @@ import {createArticleRules, updateArticleRules} from "@/util/formRules.ts"
 import {uploadArticleFeaturedImage} from "@/util/articleUploadUtil.ts"
 import CreateCategoryDialog from "@/components/category/CreateCategoryDialog.vue"
 import CreateTagDialog from "@/components/tag/CreateTagDialog.vue"
+import {toUrlSlug} from "@/util/slugUtil.ts"
 
 const editArticleRules: FormRules = {
   title: createArticleRules.title,
@@ -123,6 +124,10 @@ const form = reactive<{
   articleStatus: 'DRAFT',
 })
 
+const onSlugBlur = () => {
+  form.slug = toUrlSlug(form.slug)
+}
+
 const onUploadFeaturedImage = async (options: UploadRequestOptions) => {
   if (!editId.value) {
     options.onError(new Error('文章不存在') as any)
@@ -149,6 +154,8 @@ const onUploadFeaturedImage = async (options: UploadRequestOptions) => {
 
 const submit = async () => {
   if (!formRef.value) return
+
+  onSlugBlur()
   await formRef.value.validate()
 
   loading.value = true
@@ -228,7 +235,11 @@ const fetchArticle = async () => {
       </el-form-item>
 
       <el-form-item label="标识" prop="slug">
-        <el-input v-model="form.slug" placeholder="请输入文章 URL 标识"/>
+        <el-input
+            v-model="form.slug"
+            placeholder="请输入文章 URL 标识"
+            @blur="onSlugBlur"
+        />
       </el-form-item>
 
       <el-form-item label="封面">
