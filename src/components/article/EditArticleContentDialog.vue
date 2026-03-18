@@ -6,6 +6,7 @@ import {upload, uploadConfig} from "@milkdown/plugin-upload"
 import {articleApi} from "@/api/modules/article.ts"
 import {showError} from "@/util/errorUtil.ts"
 import {uploadArticleAttachment, uploadArticleContentImage, uploadArticleVideo} from "@/util/articleUploadUtil.ts"
+import {video} from "@/milkdown/video-plugin.ts"
 import "@milkdown/crepe/theme/common/style.css"
 import "@milkdown/crepe/theme/nord.css"
 
@@ -60,17 +61,35 @@ const normalizeMarkdownLinkLabel = (rawName: string, fallback: string) => {
   return label.replace(/[\[\]]/g, '')
 }
 
+const escapeDirectiveAttribute = (value: string) => {
+  return value.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\r?\n/g, ' ')
+}
+
+const escapeHtmlAttribute = (value: string) => {
+  return value
+      .replace(/&/g, '&amp;')
+      .replace(/"/g, '&quot;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+}
+
 const videoSnippet = computed(() => {
   if (!uploadedVideoUrl.value) return ''
 
   const filename = normalizeMarkdownLinkLabel(uploadedVideoName.value, '视频文件')
-  return `[视频：${filename}](${uploadedVideoUrl.value})`
+  const src = escapeDirectiveAttribute(uploadedVideoUrl.value)
+  const title = escapeDirectiveAttribute(filename)
+  return `::video{src="${src}" title="${title}" controls}`
 })
 
 const videoHtmlSnippet = computed(() => {
   if (!uploadedVideoUrl.value) return ''
 
-  return `<video src="${uploadedVideoUrl.value}" controls preload="metadata" style="max-width: 100%;"></video>`
+  const filename = normalizeMarkdownLinkLabel(uploadedVideoName.value, '视频文件')
+  const src = escapeHtmlAttribute(uploadedVideoUrl.value)
+  const title = escapeHtmlAttribute(filename)
+
+  return `<video src="${src}" title="${title}" controls preload="metadata" style="display:block;max-width:100%;height:auto;"></video>`
 })
 
 const attachmentSnippet = computed(() => {
@@ -151,14 +170,15 @@ const mountEditor = async (content: string) => {
   })
 
   editor.editor
-    .config((ctx) => {
-      ctx.update(uploadConfig.key, (value) => ({
-        ...value,
-        enableHtmlFileUploader: true,
-        uploader: (files, schema) => uploadContentImagesFromFiles(files, schema),
-      }))
-    })
-    .use(upload)
+      .use(video)
+      .config((ctx) => {
+        ctx.update(uploadConfig.key, (value) => ({
+          ...value,
+          enableHtmlFileUploader: true,
+          uploader: (files, schema) => uploadContentImagesFromFiles(files, schema),
+        }))
+      })
+      .use(upload)
 
   editor.on((listener) => {
     listener.markdownUpdated((_ctx, markdown) => {
@@ -210,13 +230,13 @@ const confirmDiscardIfNeeded = async (): Promise<boolean> => {
 
   try {
     await ElMessageBox.confirm(
-      '当前内容尚未保存，确定要关闭吗？',
-      '提示',
-      {
-        type: 'warning',
-        confirmButtonText: '放弃修改',
-        cancelButtonText: '继续编辑',
-      }
+        '当前内容尚未保存，确定要关闭吗？',
+        '提示',
+        {
+          type: 'warning',
+          confirmButtonText: '放弃修改',
+          cancelButtonText: '继续编辑',
+        }
     )
 
     return true
@@ -461,8 +481,14 @@ onBeforeUnmount(() => {
 defineExpose({
   openDialog,
 })
-</script>
 
+const defaultVideoHtmlSnippet =
+    '<video controls preload="metadata" src="https://example.com/movie.mp4" style="display:block;max-width:100%;height:auto;" title="视频文件.mp4"></video>'
+
+const displayVideoHtmlSnippet = computed(() => {
+  return videoHtmlSnippet.value || defaultVideoHtmlSnippet
+})
+</script>
 <template>
   <el-dialog
       v-model="isDialogVisible"
@@ -481,7 +507,6 @@ defineExpose({
             </div>
             <p class="toolbar-tip">支持 Ctrl+V 粘贴图片或拖拽图片到编辑器自动上传。</p>
           </div>
-
           <div class="toolbar-actions">
             <el-button :disabled="loading || saving" size="small" @click="onOpenTitleDialog">编辑标题</el-button>
             <el-button :disabled="loading || saving" size="small" @click="onOpenVideoDialog">上传视频</el-button>
@@ -490,11 +515,9 @@ defineExpose({
         </div>
       </el-card>
     </template>
-
     <div v-loading="loading" class="content-editor-body">
       <div ref="editorRootRef" class="content-editor-host"/>
     </div>
-
     <template #footer>
       <div class="flex w-full items-center justify-end gap-2">
         <el-button :disabled="saving" @click="onCancel">取消</el-button>
@@ -509,7 +532,6 @@ defineExpose({
       </div>
     </template>
   </el-dialog>
-
   <el-dialog
       v-model="isTitleDialogVisible"
       append-to-body
@@ -522,7 +544,6 @@ defineExpose({
         placeholder="请输入新的文章标题"
         show-word-limit
     />
-
     <template #footer>
       <div class="flex justify-end gap-2">
         <el-button :disabled="titleSaving" @click="isTitleDialogVisible = false">取消</el-button>
@@ -530,7 +551,6 @@ defineExpose({
       </div>
     </template>
   </el-dialog>
-
   <el-dialog
       v-model="isVideoDialogVisible"
       append-to-body
@@ -542,7 +562,6 @@ defineExpose({
         <video v-if="uploadedVideoUrl" :src="uploadedVideoUrl" class="preview-video" controls/>
         <div v-else class="preview-placeholder">上传后可在此预览视频</div>
       </div>
-
       <div class="asset-upload-row">
         <el-upload
             :disabled="videoUploading"
@@ -554,23 +573,18 @@ defineExpose({
             {{ uploadedVideoUrl ? '重新上传视频' : '选择视频上传' }}
           </el-button>
         </el-upload>
-
         <el-link v-if="uploadedVideoUrl" :href="uploadedVideoUrl" target="_blank" type="primary">打开视频地址</el-link>
       </div>
-
-      <p class="snippet-tip">Milkdown 中建议使用 Markdown 链接。点击代码块可复制，再粘贴到正文即可。</p>
+      <p class="snippet-tip">Milkdown 中建议使用 video 指令语法。点击代码块可复制，再粘贴到正文即可。</p>
       <div :class="{disabled: !videoSnippet}" class="snippet-box" @click="onCopyVideoSnippet">
-        <code>{{ videoSnippet || '[视频：视频文件.mp4](https://example.com/movie.mp4)' }}</code>
+        <code>{{ videoSnippet || '::video{src="https://example.com/movie.mp4" title="视频文件.mp4" controls}' }}</code>
       </div>
-
-
-      <p class="snippet-subtitle">可选：复制 HTML 嵌入代码（Milkdown 内可能显示为文本，取决于渲染配置）。</p>
+      <p class="snippet-subtitle">可选：复制 HTML &lt;video&gt; 嵌入代码（是否生效取决于渲染配置）。</p>
       <div :class="{disabled: !videoHtmlSnippet}" class="snippet-box" @click="onCopyVideoHtmlSnippet">
-        <code>{{ videoHtmlSnippet || '<video controls preload="metadata" src="..." style="max-width: 100%;"></video>' }}</code>
+        <code>{{ displayVideoHtmlSnippet }}</code>
       </div>
     </div>
   </el-dialog>
-
   <el-dialog
       v-model="isAttachmentDialogVisible"
       append-to-body
@@ -585,7 +599,6 @@ defineExpose({
         </template>
         <div v-else class="preview-placeholder">上传后可在此查看附件链接</div>
       </div>
-
       <div class="asset-upload-row">
         <el-upload
             :disabled="attachmentUploading"
@@ -596,20 +609,17 @@ defineExpose({
             {{ uploadedAttachmentUrl ? '重新上传附件' : '选择附件上传' }}
           </el-button>
         </el-upload>
-
-        <el-link v-if="uploadedAttachmentUrl" :href="uploadedAttachmentUrl" target="_blank" type="primary">打开附件地址</el-link>
+        <el-link v-if="uploadedAttachmentUrl" :href="uploadedAttachmentUrl" target="_blank" type="primary">
+          打开附件地址
+        </el-link>
       </div>
-
       <p class="snippet-tip">点击下方代码块可复制，粘贴到正文即可。</p>
       <div :class="{disabled: !attachmentSnippet}" class="snippet-box" @click="onCopyAttachmentSnippet">
         <code>{{ attachmentSnippet || '[附件名称](https://example.com/file.zip)' }}</code>
       </div>
-
-
     </div>
   </el-dialog>
 </template>
-
 <style scoped>
 .article-content-dialog :deep(.el-dialog) {
   display: flex;
