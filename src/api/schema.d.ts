@@ -138,6 +138,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/user/comment/{id}/like": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** 点赞评论 */
+        post: operations["likeComment"];
+        /** 取消点赞评论 */
+        delete: operations["cancelLikeComment"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/auth/refresh": {
         parameters: {
             query?: never;
@@ -733,6 +751,11 @@ export interface components {
             id: number;
             /** @description 评论内容 */
             content: string;
+            /**
+             * Format: int32
+             * @description 点赞数
+             */
+            likeCount: number;
             /** @description 评论的用户 */
             user: components["schemas"]["UserLiteVO"];
         };
@@ -744,6 +767,16 @@ export interface components {
             id: number;
             /** @description 评论内容 */
             content: string;
+            /**
+             * @description 评论状态
+             * @enum {string}
+             */
+            status: "PENDING" | "PUBLISHED" | "DELETED" | "SPAM";
+            /**
+             * Format: int32
+             * @description 点赞数
+             */
+            likeCount: number;
             /** @description 评论的文章id */
             article: components["schemas"]["ArticleTitleVO"];
             /** @description 评论的用户 */
@@ -764,6 +797,15 @@ export interface components {
             id: number;
             /** @description 昵称 */
             nickname: string;
+        };
+        LikeCommentVO: {
+            /** @description 是否点赞 */
+            liked: boolean;
+            /**
+             * Format: int64
+             * @description 点赞数
+             */
+            likeCount: number;
         };
         RefreshVO: {
             /** @description openai.auth.access_token */
@@ -966,6 +1008,11 @@ export interface components {
         UpdateCommentDTO: {
             /** @description 评论内容 */
             content?: string;
+            /**
+             * @description 评论状态
+             * @enum {string}
+             */
+            status?: "PENDING" | "PUBLISHED" | "DELETED" | "SPAM";
         };
         UpdateCategoriesDTO: {
             /** @description 分类名字 */
@@ -1058,6 +1105,11 @@ export interface components {
             id: number;
             /** @description 评论内容 */
             content: string;
+            /**
+             * Format: int32
+             * @description 点赞数
+             */
+            likeCount: number;
             /** @description 评论的用户 */
             user: components["schemas"]["UserLiteVO"];
             /**
@@ -1122,6 +1174,11 @@ export interface components {
             id: number;
             /** @description 评论内容 */
             content: string;
+            /**
+             * Format: int32
+             * @description 点赞数
+             */
+            likeCount: number;
             /** @description 评论的用户 */
             user: components["schemas"]["UserLiteVO"];
             /**
@@ -1582,6 +1639,52 @@ export interface operations {
             };
         };
     };
+    likeComment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description 评论id */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["LikeCommentVO"];
+                };
+            };
+        };
+    };
+    cancelLikeComment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description 评论id */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["LikeCommentVO"];
+                };
+            };
+        };
+    };
     refresh: {
         parameters: {
             query?: never;
@@ -1898,6 +2001,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
+                /** @description 评论id */
                 id: number;
             };
             cookie?: never;
@@ -2635,6 +2739,8 @@ export interface operations {
             query?: {
                 /** @description 评论关键词(评论内容) */
                 keyword?: string;
+                /** @description 评论状态 */
+                status?: "PENDING" | "PUBLISHED" | "DELETED" | "SPAM";
                 /** @description 页数 */
                 page?: number;
                 /** @description 大小 */

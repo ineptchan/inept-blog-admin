@@ -295,6 +295,51 @@ paths:
                 $ref: "#/components/schemas/CommentVO"
       security:
       - accessToken: []
+  /user/comment/{id}/like:
+    post:
+      tags:
+        - 评论接口
+      summary: 点赞评论
+      operationId: likeComment
+      parameters:
+        - name: id
+          in: path
+          description: 评论id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/LikeCommentVO"
+      security:
+        - accessToken: [ ]
+    delete:
+      tags:
+        - 评论接口
+      summary: 取消点赞评论
+      operationId: cancelLikeComment
+      parameters:
+        - name: id
+          in: path
+          description: 评论id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/LikeCommentVO"
+      security:
+        - accessToken: [ ]
   /auth/refresh:
     post:
       tags:
@@ -637,6 +682,7 @@ paths:
       parameters:
       - name: id
         in: path
+        description: 评论id
         required: true
         schema:
           type: integer
@@ -1510,6 +1556,18 @@ paths:
         schema:
           type: string
           description: openapi.comment.query_keyword
+      - name: status
+        in: query
+        description: 评论状态
+        required: false
+        schema:
+          type: string
+          description: openapi.comment.status
+          enum:
+            - PENDING
+            - PUBLISHED
+            - DELETED
+            - SPAM
       - name: page
         in: query
         description: 页数
@@ -1803,12 +1861,17 @@ components:
         content:
           type: string
           description: 评论内容
+        likeCount:
+          type: integer
+          format: int32
+          description: 点赞数
         user:
           $ref: "#/components/schemas/UserLiteVO"
           description: 评论的用户
       required:
       - content
       - id
+      - likeCount
       - user
     CommentVO:
       type: object
@@ -1820,6 +1883,18 @@ components:
         content:
           type: string
           description: 评论内容
+        status:
+          type: string
+          description: 评论状态
+          enum:
+            - PENDING
+            - PUBLISHED
+            - DELETED
+            - SPAM
+        likeCount:
+          type: integer
+          format: int32
+          description: 点赞数
         article:
           $ref: "#/components/schemas/ArticleTitleVO"
           description: 评论的文章id
@@ -1838,6 +1913,8 @@ components:
       - content
       - createdAt
       - id
+      - likeCount
+      - status
       - user
     UserLiteVO:
       type: object
@@ -1852,6 +1929,19 @@ components:
       required:
       - id
       - nickname
+    LikeCommentVO:
+      type: object
+      properties:
+        liked:
+          type: boolean
+          description: 是否点赞
+        likeCount:
+          type: integer
+          format: int64
+          description: 点赞数
+      required:
+        - likeCount
+        - liked
     RefreshVO:
       type: object
       properties:
@@ -2071,7 +2161,7 @@ components:
           type: string
           description: 文章标题
           maxLength: 24
-          minLength: 0
+          minLength: 1
         slug:
           type: string
           description: 文章URL标识
@@ -2246,6 +2336,14 @@ components:
         content:
           type: string
           description: 评论内容
+        status:
+          type: string
+          description: 评论状态
+          enum:
+            - PENDING
+            - PUBLISHED
+            - DELETED
+            - SPAM
     UpdateCategoriesDTO:
       type: object
       properties:
@@ -2384,6 +2482,10 @@ components:
         content:
           type: string
           description: 评论内容
+        likeCount:
+          type: integer
+          format: int32
+          description: 点赞数
         user:
           $ref: "#/components/schemas/UserLiteVO"
           description: 评论的用户
@@ -2395,6 +2497,7 @@ components:
       - content
       - createdAt
       - id
+      - likeCount
       - user
     PageResponseCommentReplyVO:
       type: object
@@ -2466,6 +2569,10 @@ components:
         content:
           type: string
           description: 评论内容
+        likeCount:
+          type: integer
+          format: int32
+          description: 点赞数
         user:
           $ref: "#/components/schemas/UserLiteVO"
           description: 评论的用户
@@ -2477,6 +2584,7 @@ components:
       - content
       - createdAt
       - id
+      - likeCount
       - user
     PageResponseCategoriesVO:
       type: object
